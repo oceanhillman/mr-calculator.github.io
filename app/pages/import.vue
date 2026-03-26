@@ -720,7 +720,7 @@ function importData() {
             preferences.value = dataSegment.value.data.preferences;
     }
 
-    resetLocalStorageCache();
+    nextTick(resetLocalStorageCache);
 
     dataSegment.value = null;
 

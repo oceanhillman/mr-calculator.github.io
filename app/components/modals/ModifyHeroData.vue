@@ -90,6 +90,34 @@
                 </div>
                 <h3>Edit Hero</h3>
             </li>
+            <li
+                v-if="isUnknownHero"
+                class="warning-wrapper"
+                @click="$emit('confirm', 'convert-unknown-hero')"
+            >
+                <Tex
+                    v-if="unknownHeroHasPossibleMatch"
+                    class="warning-bubble"
+                    image="redDotExcl"
+
+                    width="22px"
+                    height="22px"
+                    object-fit="contain"
+                />
+
+                <div class="icon-wrapper">
+                    <Tex
+                        image="swap"
+                        state="hover"
+                        color="#fff"
+
+                        width="45px"
+                        height="45px"
+                        object-fit="contain"
+                    />
+                </div>
+                <h3>Convert to Official Hero</h3>
+            </li>
             <li v-if="isUnknownHero" @click="$emit('confirm', 'delete-unknown-hero')">
                 <div class="icon-wrapper">
                     <Tex
@@ -169,6 +197,7 @@
 
 <script setup lang="ts">
 import { DEFAULT_HERO_STORE, type HeroData, type PlayerHeroStore } from '~/assets/data/common';
+import { useUnknownHeroHasPossibleMatch } from '~/composables/useUnknownHeroHasPossibleMatch';
 
 const props = defineProps<{
     title: string,
@@ -181,5 +210,7 @@ const props = defineProps<{
 const storedLevel = useLocalStorage<PlayerHeroStore>(`hero_${props.hero.id}`, DEFAULT_HERO_STORE());
 const hasAvgStats = useHasAvgStats(() => props.hero);
 const isLv1AndGoalLv1 = computed(() => storedLevel.value.level == 1 && storedLevel.value.goal == 1);
+
+const unknownHeroHasPossibleMatch = useUnknownHeroHasPossibleMatch(props.hero).value.length;
 
 </script>

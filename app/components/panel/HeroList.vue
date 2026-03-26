@@ -66,6 +66,7 @@
                         :portrait="`${hero.dataDir}portrait.webp`"
 
                         :is-favourite="favourites.includes(hero.id)"
+                        :is-checked="selectedHero == hero.id"
                         :rank="level.rank"
                     />
                 </component>
@@ -83,13 +84,18 @@ import { HERO_LIST } from '~/assets/data/heroes';
 import { tex, texUrl } from '~/assets/data/textures';
 
 const props = withDefaults(defineProps<{
+    selectedHero?: string,
+
     links?: boolean,
     addHeroEnabled?: boolean,
-    showUnknownHeroes?: boolean
+    showUnknownHeroes?: boolean,
+
+    sortHeroes?: (a: HeroData, b: HeroData) => number
 }>(), {
     links: true,
     addHeroEnabled: true,
-    showUnknownHeroes: true
+    showUnknownHeroes: true,
+    sortHeroes: (a,b) => a.name.localeCompare(b.name)
 });
 
 const emit = defineEmits<{
@@ -129,7 +135,6 @@ const favourites = useLocalStorage<HeroData['id'][]>(`favourite_heroes`, []);
 
 const searchText = ref('');
 
-// todo move heroes up to the top if they have been used before based on localdata
 const heroList = computed<{ hero: HeroData, level: PlayerHeroStore }[]>(() => {
     let list = [...HERO_LIST, ...(props.showUnknownHeroes ? unknownHeroes.value : [])];
 
@@ -151,7 +156,7 @@ const heroList = computed<{ hero: HeroData, level: PlayerHeroStore }[]>(() => {
          || h.aliases?.find(a => a.toLowerCase().includes(searchText.value.toLowerCase()))
         );
 
-    list.sort((a,b) => a.name.localeCompare(b.name));
+    list.sort(props.sortHeroes);
 
     const output = list.map(hero => {
         const storedLevel = useLocalStorage<PlayerHeroStore>(`hero_${hero.id}`, DEFAULT_HERO_STORE());

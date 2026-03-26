@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="{'hero-card': 1, favourite: isFavourite}"
+        :class="{'hero-card': 1, favourite: isFavourite || isChecked}"
         :style="{
             '--bg-color': color
         }"
@@ -26,7 +26,7 @@
         />
         <Tex
             class="favourite-check"
-            image="favouriteCorner"
+            :image="isChecked ? 'checkCorner' : 'favouriteCorner'"
 
             width="45px"
             height="45px"
@@ -78,6 +78,7 @@ const props = defineProps<{
     portrait: string,
 
     isFavourite: boolean,
+    isChecked?: boolean,
     rank?: ProficiencyRank['id']
 }>();
 

@@ -35,12 +35,23 @@
                     />
                 </div>
             </div>
-            <img
-                class="menu"
-                :src="page == 'overview' ? tex('calculator') : tex('hamburger')"
-
+            <div
+                class="menu warning-wrapper"
                 @click="setPage(page == 'overview' ? 'calculator' : 'overview')"
-            />
+            >
+                <img
+                    class="menu-icon"
+                    :src="page == 'overview' ? tex('calculator') : tex('hamburger')"
+                />
+
+                <Tex
+                    v-if="!storedLevel.openedCalculator"
+                    class="warning-bubble"
+                    image="redDotExcl"
+
+                    object-fit="contain"
+                />
+            </div>
             <!-- @click="menuOpen = !menuOpen" -->
 
             <!-- :class="{visible: menuOpen}" -->
@@ -170,7 +181,7 @@
                             />
 
                             <Tex
-                                v-if="!hasAvgStats || isLv1AndGoalLv1"
+                                v-if="!hasAvgStats || isLv1AndGoalLv1 || unknownHeroHasPossibleMatch"
                                 class="warning-bubble"
                                 image="redDotExcl"
 
@@ -301,6 +312,7 @@ import { tex, texUrl } from '~/assets/data/textures';
 import ConfigureHeroModal from '~/components/modals/ConfigureHeroModal.vue';
 import ConfirmModal from '~/components/modals/ConfirmModal.vue';
 import { useAbsoluteUrl } from '~/composables/config';
+import ConvertUnknownHeroModal from '~/components/modals/ConvertUnknownHeroModal.vue';
 
 const { openModal } = useModalManager();
 const { notify } = useNotificationManager();
@@ -422,6 +434,7 @@ function toggleFavourite() {
 const storedLevel = useLocalStorage<PlayerHeroStore>(`hero_${hero.value.id}`, DEFAULT_HERO_STORE());
 const hasAvgStats = useHasAvgStats(hero);
 const isLv1AndGoalLv1 = computed(() => storedLevel.value.level == 1 && storedLevel.value.goal == 1);
+const unknownHeroHasPossibleMatch = useUnknownHeroHasPossibleMatch(hero.value).value.length;
 const isIncorrectSelection = computed(() => storedLevel.value.goal <= storedLevel.value.level);
 
 const page = ref<'overview'|'calculator'>('overview');
@@ -477,6 +490,8 @@ function modifyHeroData() {
             selectLevelGoal(modifyHeroData);
         else if (where == 'edit-unknown-hero')
             editUnknownHero(modifyHeroData);
+        else if (where == 'convert-unknown-hero')
+            convertUnknownHero(modifyHeroData);
         else if (where == 'delete-unknown-hero')
             deleteUnknownHero(modifyHeroData);
     })
@@ -632,6 +647,68 @@ function editUnknownHero(callback = () => {}, callbackOnSuccess = false) {
         // success, route to new hero if id changed
         if (currentId != editedHero.id)
             router.replace('/heroes/' + editedHero.id);
+    })
+    .catch(callback)
+}
+
+function convertUnknownHero(callback = () => {}, callbackOnSuccess = false) {
+    openModal(ConvertUnknownHeroModal, {
+        title: 'Convert Hero',
+        message: 'Moves your stats and progression to an existing hero <br/> <i>(use this when heroes you added manually have been added officially to the calulcator)</i>',
+        hero: structuredClone(extractRawValue(hero))
+    })
+    .promise
+    .then((heroId: string) => {
+        const officialHero = HERO_LIST.find(h => h.id == heroId)
+
+        if (!officialHero) {
+            notify(
+                `An unexpected error occured. We couldn't find the target hero.`,
+                3000,
+                { image: 'warning', color: '#c94f36' }
+            );
+
+            return;
+        }
+
+        // check missions
+        const matchesMissions = !officialHero.ranks[0]?.challenges.some(c =>
+            !hero.value.ranks[0]?.challenges.some(hc => hc.type === c.type)
+        );
+
+        if (!matchesMissions) {
+            notify(
+                `Conversion failed. Missions of the custom hero don't match those of the target hero.`,
+                5000,
+                { image: 'warning', color: '#c94f36' }
+            );
+
+            return;
+        }
+
+        if (isFavourite.value) {
+            const favIndex = favourites.value.indexOf(hero.value.id);
+            favourites.value.splice(favIndex, 1);
+
+            if (!favourites.value.includes(heroId))
+                favourites.value.push(heroId);
+        }
+
+        changeLocalStorageKey(`hero_${hero.value.id}`, `hero_${heroId}`);
+        deleteFromLocalStorage(`hero_${hero.value.id}`);
+        deleteHero(hero.value.id);
+
+        if (callbackOnSuccess)
+            callback();
+
+        notify(
+            `Hero converted successfully!`,
+            3000,
+            { image: 'check', color: '#458a14' }
+        );
+
+        // success, route to new hero
+        router.replace('/heroes/' + heroId);
     })
     .catch(callback)
 }

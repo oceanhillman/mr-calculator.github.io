@@ -147,8 +147,12 @@ function onChange(e: Event) {
         return;
 
     const evaluated = eval(value);
-    
-    inputModel.value = parseFloat(evaluated) + '';
+    const parsed = parseFloat(evaluated);
+    let toString = parsed + '';
+    if (parsed % 1 != 0)
+        toString = parsed.toFixed(1);
+
+    inputModel.value = toString;
 }
 
 watch(inputModel, (value) => {
