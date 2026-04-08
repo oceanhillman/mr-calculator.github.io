@@ -33,7 +33,9 @@
                         </ClientOnly>
                         <img
                             v-if="!reward.iconAnimation"
-                            class="icon" :src="reward.icon"
+                            class="icon"
+                            :src="reward.icon"
+                            :alt="`${reward.name} Icon`"
                         />
                         <div v-else class="animated-icon-wrapper">
                             <UiAnimatedIcon
@@ -51,7 +53,7 @@
 
             <div class="level-title">
                 <div v-if="rank" class="rank-icon">
-                    <img :src="rank.icon" />
+                    <img :src="rank.icon" :alt="`${rank.name} Icon`" />
                 </div>
                 <h3>LV{{ level }}</h3>
             </div>
@@ -62,7 +64,7 @@
 <style src="@/assets/style/components/hero-proficiency-reward-list.sass" scoped></style>
 
 <script setup lang="ts">
-import { levelToRank, PROFICIENCY_RANKS, replaceRewardPlaceholders, type HeroData, type ProficiencyRank, type Reward } from '~/assets/data/common';
+import { levelToRank, replaceRewardPlaceholders, type HeroData, type ProficiencyRank, type Reward } from '~/assets/data/common';
 import { tex } from '~/assets/data/textures';
 
 const props = defineProps<{

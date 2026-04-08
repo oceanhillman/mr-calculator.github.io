@@ -125,7 +125,7 @@
                                         class="avatar"
                                         @click="credibilityClickHero(hero.heroId)"
                                     >
-                                        <img :src="hero._hero.dataDir + 'spray.webp'" />
+                                        <img :src="hero._hero.dataDir + 'spray.webp'" :alt="`${hero.heroName} Logo (Spray)`" />
                                     </div>
                                     <div
                                         class="inner"
@@ -164,7 +164,10 @@
                             <h4>Average Stats per 10 minutes</h4>
                             <ul class="stats with-border-decorations">
                                 <li v-for="[statType, statValue] in Object.entries(credibilitySelectedHero.avgStats)">
-                                    <img :src="CHALLENGE_ICONS[statType as Challenge['type']]!">
+                                    <img
+                                        :src="CHALLENGE_ICONS[statType as Challenge['type']]!"
+                                        :alt="`${CHALLENGE_NAMES[statType as Challenge['type']]!} Icon`"
+                                    >
                                     <p>{{ CHALLENGE_NAMES[statType as Challenge['type']]! }}</p>
                                     <p class="stat-value">{{ statValue.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}</p>
                                 </li>
@@ -265,13 +268,17 @@
                             height="150px"
                         />
 
-                        <img class="badge" src="/img/heroes/common-rewards/champion-badge.webp" />
-                        <img v-if="heroHasRoleIcon" class="role" :src="heroRoleIcon">
+                        <img
+                            class="badge"
+                            src="/img/heroes/common-rewards/champion-badge.webp"
+                            alt="Champion Icon"
+                        />
+                        <img v-if="heroHasRoleIcon" class="role" :src="heroRoleIcon" alt="Hero Role Icon">
                     </div>
                 </div>
 
                 <div class="hero-skin">
-                    <img src="/img/tex/promo/luna-snow-cool-summer.webp" />
+                    <img src="/img/tex/promo/luna-snow-cool-summer.webp" alt="Luna Snow Cool Summer" />
                 </div>
             </section>
             <section class="custom-estimates double reverse h100">
@@ -353,7 +360,7 @@
 
             <section class="future-proofing double">
                 <div class="new-hero-image">
-                    <img src="/img/tex/promo/new-hero.webp" />
+                    <img src="/img/tex/promo/new-hero.webp" alt="Missing Hero Logo" />
                 </div>
                 <div class="new-hero">
                     <h3 class="animate-text">A new hero was added to <span>MARVEL RIVALS</span>, but not here?</h3>
@@ -390,7 +397,7 @@
                             class="lord-icon"
                         >
                             <div class="lord-icon-wrapper">
-                                <img :src="`${hero.dataDir}bust-lord.webp`" />
+                                <img :src="`${hero.dataDir}bust-lord.webp`" :alt="`${hero.name} Lord Icon`" />
                             </div>
                         </div>
                     </div>
@@ -419,7 +426,7 @@
             </div>
             <div class="links">
                 <a class="icon" :href="`https://github.com/${appConfig.githubUser}`">
-                    <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32" data-view-component="true">
+                    <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32">
                         <path fill="currentColor" d="M10.303 16.652c-2.837-.344-4.835-2.385-4.835-5.028 0-1.074.387-2.235 1.031-3.008-.279-.709-.236-2.214.086-2.837.86-.107 2.02.344 2.708.967.816-.258 1.676-.386 2.728-.386 1.053 0 1.913.128 2.686.365.666-.602 1.848-1.053 2.708-.946.3.581.344 2.085.064 2.815.688.817 1.053 1.913 1.053 3.03 0 2.643-1.998 4.641-4.877 5.006.73.473 1.224 1.504 1.224 2.686v2.235c0 .644.537 1.01 1.182.752 3.889-1.483 6.94-5.372 6.94-10.185 0-6.081-4.942-11.044-11.022-11.044-6.081 0-10.98 4.963-10.98 11.044a10.84 10.84 0 0 0 7.112 10.206c.58.215 1.139-.172 1.139-.752v-1.719a2.768 2.768 0 0 1-1.032.215c-1.418 0-2.256-.773-2.857-2.213-.237-.58-.495-.924-.989-.988-.258-.022-.344-.129-.344-.258 0-.258.43-.451.86-.451.623 0 1.16.386 1.719 1.181.43.623.881.903 1.418.903.537 0 .881-.194 1.375-.688.365-.365.645-.687.903-.902Z"></path>
                     </svg>
                 </a>

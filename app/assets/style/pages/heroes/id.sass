@@ -527,6 +527,93 @@
                     ::v-deep(.tab-container)
                         height: 100%
 
+                &[data-current-tab="stats"]
+                    ::v-deep(.tab-container)
+                        width: 100%
+                        display: flex
+                        justify-content: center
+                        align-items: center
+                        padding: 20px
+
+                        .stats-container
+                            width: 100%
+                            display: flex
+                            flex-direction: column
+                            justify-content: center
+                            align-items: center
+                            gap: 20px
+
+                            h2
+                                font-size: 28px
+                                text-transform: uppercase
+                                text-align: center
+                                color: $blue
+
+                            h3
+                                font-size: 22px
+                                text-transform: uppercase
+                                text-align: center
+                                color: $light-blue
+
+                                span
+                                    color: $blue
+
+                            .stats
+                                max-width: 450px
+                                position: relative
+                                padding: 20px
+
+                                display: grid
+                                grid-template-columns: 1fr 1fr
+                                justify-content: center
+                                align-items: center
+                                gap: 20px
+
+                                +media-mobile
+                                    max-width: 100%
+                                    gap: 10px
+
+                                li
+                                    min-width: 110px
+
+                                    display: flex
+                                    flex-direction: column
+                                    justify-content: center
+                                    align-items: center
+
+                                    img
+                                        width: 70px
+
+                                        user-select: none
+                                        -webkit-user-drag: none
+
+                                        margin-bottom: 15px
+
+                                    p
+                                        color: $light-blue
+                                        font-size: 20px
+                                        font-family: RefrigeratorDeluxeHeavy
+                                        text-transform: uppercase
+                                        text-align: center
+
+                                        +media-mobile
+                                            font-size: 18px
+
+                                        &.stat-value
+                                            width: 100%
+                                            text-align: center
+                                            font-size: 30px
+                                            color: $blue
+
+                                            background: var(--tex-tab-active) no-repeat
+                                            background-size: 100% 100%
+
+                                            padding: 0 30px 0 30px
+
+                                            +media-mobile
+                                                font-size: 26px
+                                                padding: 0
+
             ::v-deep(.tab-container)
                 width: 100%
 

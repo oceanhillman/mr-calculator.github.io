@@ -89,6 +89,9 @@
         cursor: pointer
 
         +media-desktop
+            padding: 0 60px
+
+        +media-ml-desktop
             padding: 0 100px
 
         &:not(:last-of-type)

@@ -239,6 +239,48 @@
                             v-model="selectedRank"
                         />
                     </template>
+                    <template #stats>
+                        <div class="stats-container">
+                            <h2>Generic Average Stats per 10 minutes</h2>
+                            <ul class="stats with-border-decorations">
+                                <li v-for="[statType, statValue] in Object.entries(stats.avgStats)">
+                                    <img
+                                        :src="CHALLENGE_ICONS[statType as Challenge['type']]!"
+                                        :alt="`${CHALLENGE_ICONS[statType as Challenge['type']]!} Icon`"
+                                    >
+                                    <p>{{ CHALLENGE_NAMES[statType as Challenge['type']]! }}</p>
+                                    <p class="stat-value">{{ statValue.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}</p>
+                                </li>
+                            </ul>
+                            <h3>DATA FROM <span>{{ stats.matchCount.toLocaleString() }}</span> MATCHES</h3>
+
+                            <template v-if="hasAvgStats">
+                                <ClientOnly>
+                                    <h2>Your Average Stats per 10 minutes</h2>
+                                    <ul class="stats with-border-decorations">
+                                        <li v-for="[statType, statValue] in Object.entries(storedLevel.averageStats).filter(([t]) => t != 'play')">
+                                            <img
+                                                :src="CHALLENGE_ICONS[statType as Challenge['type']]!"
+                                                :alt="`${CHALLENGE_ICONS[statType as Challenge['type']]!} Icon`"
+                                            >
+                                            <p>{{ CHALLENGE_NAMES[statType as Challenge['type']]! }}</p>
+                                            <p class="stat-value">{{ statValue.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}</p>
+                                        </li>
+                                    </ul>
+                                    <FormButton size="small" @click="editAvgStats()">
+                                        <Tex
+                                            image="gameTime"
+                                            color="var(--dark)"
+
+                                            width="40px"
+                                            height="40px"
+                                        />
+                                        CHANGE YOUR STATS
+                                    </FormButton>
+                                </ClientOnly>
+                            </template>
+                        </div>
+                    </template>
                 </PanelTabbedContainer>
             </div>
             <div
@@ -303,7 +345,7 @@
 
 <script setup lang="ts">
 import { useModalManager } from '#imports';
-import { DEFAULT_HERO_STORE, DEFAULT_PREFERENCES_STORE, levelToRank, PROFICIENCY_RANKS, replaceRewardPlaceholders, type PlayerHeroStore, type PreferencesStore, type ProficiencyRank, type Reward } from '~/assets/data/common';
+import { CHALLENGE_ICONS, CHALLENGE_NAMES, DEFAULT_HERO_STORE, DEFAULT_PREFERENCES_STORE, getAverageStatsForHero, getHeroMatchCount, levelToRank, PROFICIENCY_RANKS, replaceRewardPlaceholders, type Challenge, type PlayerHeroStore, type PreferencesStore, type ProficiencyRank, type Reward } from '~/assets/data/common';
 import { createHero, deleteHero, editHero, HERO_LIST, UNKNOWN_HERO } from '~/assets/data/heroes';
 import AverageStatsModal from '~/components/modals/AverageStatsModal.vue';
 import InputModal from '~/components/modals/InputModal.vue';
@@ -406,6 +448,16 @@ useSeoMeta({
 });
 
 const menuOpen = ref(false);
+
+const stats = computed(() => {
+    const matchCount = getHeroMatchCount(hero.value.id);
+    const avgStats = getAverageStatsForHero(hero.value.id);
+
+    return {
+        matchCount,
+        avgStats
+    }
+})
 
 const preferences = useLocalStorage<PreferencesStore>('preferences', DEFAULT_PREFERENCES_STORE());
 

@@ -16,6 +16,7 @@
         <img
             class="hero-image"
             :src="portrait"
+            :alt="`${name} Portrait`"
         />
         <Tex
             class="favourite-bg"
