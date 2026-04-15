@@ -415,6 +415,7 @@
                     class="list"
                     :limit="2"
                     theme="light"
+                    :with-commits="false"
                 />
 
                 <FormButton to="/changelog">

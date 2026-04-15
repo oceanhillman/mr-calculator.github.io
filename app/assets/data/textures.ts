@@ -223,6 +223,9 @@ export const TEX = {
     chainBroken: {
         default: 'icon/chain-broken.png'
     } as Texture,
+    link: {
+        default: 'icon/link.png'
+    } as Texture,
     unknownHero: {
         default: 'icon/unknown-hero.png'
     } as Texture,

@@ -1,99 +1,176 @@
 <template>
     <ul :class="['log', `theme-${theme}`]">
         <li
-            v-for="(log, index) in entriesFiltered"
-            :key="log.version.number"
+            v-if="withCommits && groupedCommits.remaining?.length"
+            class="commits-wrapper"
         >
-            <div class="version">
-                <div v-if="index == 0" class="latest">LATEST</div>
-                <h3>v{{ log.version.number }}</h3>
-                <p>{{ log.version.date }}</p>
-            </div>
-            <div class="body">
-                <h2>{{ log.title }}</h2>
-                <p v-if="log.description" v-html="log.description" />
-                
-                <template v-if="hasMore(log)">
-                    <FormButton
-                        size="tiny"
-                        @click="changelogExpanded[log.version.number] = !changelogExpanded[log.version.number]"
-                    >
-                        <span v-if="!changelogExpanded[log.version.number]">
-                            SEE MORE
-
-                            <Tex
-                                image="chevronDown"
-                                color="var(--text-color)"
-
-                                width="20px"
-                                height="16px"
-                            />
-                        </span>
-                        <span v-else>
-                            SEE LESS
-
-                            <Tex
-                                image="chevronUp"
-                                color="var(--text-color)"
-
-                                width="20px"
-                                height="16px"
-                            />
-                        </span>
-                    </FormButton>
-                    <br/>
-                </template>
-
-                <div v-if="!changelogExpanded[log.version.number] && log.images?.length">
-                    <ul class="images presentation">
-                        <li @click="lightBoxedImage = log.images[0]">
-                            <img :src="log.images[0]" />
-                        </li>
-                    </ul>
-                </div>
-                <div v-else-if="changelogExpanded[log.version.number]" class="more">
-                    <template v-if="log.list?.length">
-                        <h3>{{ log.listTitle ?? `Changes` }}</h3>
-                        <ul class="changes">
-                            <li
-                                v-for="change in log.list"
-                                v-html="change"
-                            />
-                        </ul>
-                    </template>
-                    <ul v-if="log.images" class="images">
-                        <li
-                            v-for="image in log.images"
-
-                            @click="lightBoxedImage = image"
-                        >
-                            <img :src="image" />
-                        </li>
-                    </ul>
-
-                    <br/>
-                    <FormButton
-                        v-if="hasMore(log, true)"
-                        class="see-less-inner"
-
-                        size="tiny"
-                        @click="changelogExpanded[log.version.number] = !changelogExpanded[log.version.number]"
-                    >
-                        <span>
-                            SEE LESS
-
-                            <Tex
-                                image="chevronUp"
-                                color="var(--text-color)"
-
-                                width="20px"
-                                height="16px"
-                            />
-                        </span>
-                    </FormButton>
+            <div class="commits">
+                <div
+                    v-for="commit in groupedCommits.remaining"
+                    class="commit"
+                >
+                    <div class="meta">
+                        <a class="sha commit-sha" :href="commit.html_url" target="_blank">
+                            {{ commit.sha.slice(0, 7) }}
+                        </a>
+                        <p>{{ formatCommitDate(commit.commit?.author?.date ?? commit.commit?.committer?.date) }}</p>
+                    </div>
+                    <div class="commit-info" v-html="commitMessageToHTML(commit.commit.message)" />
                 </div>
             </div>
         </li>
+        <template
+            v-for="(log, index) in entriesFiltered"
+        >
+            <li class="log-entry">
+                <div class="version">
+                    <div v-if="index == 0" class="tag">LATEST</div>
+                    <h3>v{{ log.version.number }}</h3>
+                    <a
+                        v-if="groupedCommits.versionCommits[log.version.number]"
+                        class="commit-sha"
+
+                        :href="groupedCommits.versionCommits[log.version.number]!.html_url"
+                        target="_blank"
+                    >
+                        {{ groupedCommits.versionCommits[log.version.number]!.sha.slice(0, 7) }}
+                    </a>
+                    <p>{{ log.version.date }}</p>
+                </div>
+                <div class="body">
+                    <h2>{{ log.title }}</h2>
+                    <p v-if="log.description" v-html="log.description" />
+                    
+                    <template v-if="hasMore(log)">
+                        <FormButton
+                            size="tiny"
+                            @click="changelogExpanded[log.version.number] = !changelogExpanded[log.version.number]"
+                        >
+                            <span v-if="!changelogExpanded[log.version.number]">
+                                SEE MORE
+
+                                <Tex
+                                    image="chevronDown"
+                                    color="var(--text-color)"
+
+                                    width="20px"
+                                    height="16px"
+                                />
+                            </span>
+                            <span v-else>
+                                SEE LESS
+
+                                <Tex
+                                    image="chevronUp"
+                                    color="var(--text-color)"
+
+                                    width="20px"
+                                    height="16px"
+                                />
+                            </span>
+                        </FormButton>
+                        <br/>
+                    </template>
+
+                    <div v-if="!changelogExpanded[log.version.number] && log.images?.length">
+                        <ul class="images presentation">
+                            <li @click="lightBoxedImage = log.images[0]">
+                                <img :src="log.images[0]" />
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-else-if="changelogExpanded[log.version.number]" class="more">
+                        <template v-if="log.list?.length">
+                            <h3>{{ log.listTitle ?? `Changes` }}</h3>
+                            <ul class="changes">
+                                <li
+                                    v-for="change in log.list"
+                                    v-html="change"
+                                />
+                            </ul>
+                        </template>
+                        <ul v-if="log.images" class="images">
+                            <li
+                                v-for="image in log.images"
+
+                                @click="lightBoxedImage = image"
+                            >
+                                <img :src="image" />
+                            </li>
+                        </ul>
+
+                        <div v-if="groupedCommits.versionCommits[log.version.number]">
+                            <br v-if="log.images" />
+                            <h3>
+                                Commit
+                                <a :href="groupedCommits.versionCommits[log.version.number]!.html_url" target="_blank">
+                                    <Tex
+                                        image="link"
+                                        color="var(--blue)"
+                                        hover="color"
+                                        hover-color="var(--color-accent)"
+
+                                        clickable
+
+                                        width="28px"
+                                        height="20px"
+                                        inline
+
+                                        title="Open Commit on GitHub"
+                                    />
+                                </a>
+                            </h3>
+                            <div
+                                class="commit-info"
+                                v-html="commitMessageToHTML(
+                                    groupedCommits.versionCommits[log.version.number]!.commit.message
+                                )"
+                            />
+                        </div>
+
+                        <br/>
+                        <FormButton
+                            v-if="hasMore(log, true)"
+                            class="see-less-inner"
+
+                            size="tiny"
+                            @click="changelogExpanded[log.version.number] = !changelogExpanded[log.version.number]"
+                        >
+                            <span>
+                                SEE LESS
+
+                                <Tex
+                                    image="chevronUp"
+                                    color="var(--text-color)"
+
+                                    width="20px"
+                                    height="16px"
+                                />
+                            </span>
+                        </FormButton>
+                    </div>
+                </div>
+            </li>
+            <li
+                v-if="withCommits && groupedCommits.groups[log.version.number]"
+                class="commits-wrapper"
+            >
+                <div class="commits">
+                    <div
+                        v-for="commit in groupedCommits.groups[log.version.number]"
+                        class="commit"
+                    >
+                        <div class="meta">
+                            <a class="sha commit-sha" :href="commit.html_url" target="_blank">
+                                {{ commit.sha.slice(0, 7) }}
+                            </a>
+                            <p>{{ formatCommitDate(commit.commit?.author?.date ?? commit.commit?.committer?.date) }}</p>
+                        </div>
+                        <div class="commit-info" v-html="commitMessageToHTML(commit.commit.message)" />
+                    </div>
+                </div>
+            </li>
+        </template>
 
         <Teleport to="body">
             <div v-if="lightBoxedImage" class="lightbox-wrapper" @click="lightBoxedImage = undefined">
@@ -129,6 +206,48 @@
 
         object-fit: contain
 
+.log.theme-light .commit-info
+    color: #babfdc
+
+    ::v-deep(h3)
+        color: #fff
+
+.commit-info
+    color: $light-blue
+
+    ::v-deep(h3)
+        color: $text-color
+        font-size: 22px
+
+    ::v-deep(a)
+        text-decoration: underline
+
+.commit-sha
+    background: $color
+    padding: 3px 10px 3px 10px
+    font-family: RefrigeratorDeluxeHeavy
+    color: $blue
+
+    box-shadow: 0 1px 2px 1px rgba(0,0,0,0.2)
+    cursor: pointer
+
+    &:hover
+        text-decoration: underline
+
+@mixin grid-spacing
+    display: grid
+    grid-template-columns: 100%
+
+    +media-tablet
+        grid-template-columns: 200px 450px
+        max-width: unset
+        gap: 0
+
+    +media-desktop
+        grid-template-columns: 200px 600px
+
+    +media-large-desktop
+        grid-template-columns: 200px 700px
 
 .log
     display: flex
@@ -136,41 +255,63 @@
     gap: 60px
 
     &.theme-light
-        .version
-            p
-                color: $light-blue-highlight
+        .log-entry
+            .version
+                p
+                    color: $light-blue-highlight
 
-        .body
-            h2
-                color: #fff
+            .body
+                h2
+                    color: #fff
 
-            h3
-                color: $light
+                h3
+                    color: $light
 
-            p
-                color: #babfdc
+                p
+                    color: #babfdc
 
-            .changes li
-                color: #babfdc
+                .changes li
+                    color: #babfdc
 
-    > li
-        display: grid
+    .commits-wrapper
 
+        .commits
+            display: flex
+            flex-direction: column
+            gap: 20px
+        
+            .commit
+                padding: 0 20px
+                max-width: 600px
+                gap: 20px
+
+                +grid-spacing
+
+                .meta
+                    justify-self: center
+                    align-self: start
+
+                    display: flex
+                    flex-direction: column
+                    justify-content: start
+                    align-items: center
+                    gap: 10px
+
+                    .sha
+                        font-size: 16px
+                        color: $blue
+
+                    p
+                        font-size: 16px
+                        color: $blue
+
+
+    .log-entry
         padding: 0 20px
-        grid-template-columns: 100%
         max-width: 600px
         gap: 20px
 
-        +media-tablet
-            grid-template-columns: 200px 450px
-            max-width: unset
-            gap: 0
-
-        +media-desktop
-            grid-template-columns: 200px 600px
-
-        +media-large-desktop
-            grid-template-columns: 200px 700px
+        +grid-spacing
 
         .version
             display: flex
@@ -191,7 +332,7 @@
                 font-size: 18px
                 color: $blue
 
-            .latest
+            .tag
                 background: $color
                 padding: 3px 10px 3px 10px
                 font-family: RefrigeratorDeluxeHeavy
@@ -270,146 +411,64 @@
 </style>
 
 <script setup lang="ts">
+import { CHANGELOG, groupCommitsByVersion, type ChangeLogEntry } from '~/assets/data/changelog';
+import COMMITS_CACHE from '~/assets/data/commits-cache.json';
+
 const props = withDefaults(defineProps<{
     theme?: 'light'|'dark',
-    limit?: number
+    limit?: number,
+    withCommits?: boolean
 }>(), {
     theme: 'dark',
+    withCommits: true
 });
 
-interface ChangeLogEntry {
-    version: {
-        number: string,
-        date: string,
-    },
-    title: string,
-    description?: string,
-    listTitle?: string,
-    list?: string[],
-    images?: string[],
+async function getCommits() {
+    try {
+        const res = await fetch(`https://api.github.com/repos/${config.githubUser}/${config.githubRepo}/commits?per_page=100`);
+        if (!res.ok)
+            throw new Error();
+
+        return await res.json();
+    }
+    catch {
+        return COMMITS_CACHE;
+    }
 }
 
-const changelogEntries = ref<ChangeLogEntry[]>([
-    {
-        version: {
-            number: '1.0.0',
-            date: 'Mar 25, 2026'
-        },
-        title: 'Initial Release',
-        description: `The Marvel Rivals Proficiency Calculator allows anyone to calculate the time it takes to reach proficiency reward goals on every hero in the game. With detailed progression and the ability to type in your own stats you are guaranteed to get the most accurate estimates for your playstyle!`,
-        listTitle: 'Features',
-        list: [
-            'All heroes in the game',
-            'All rewards for every hero',
-            'Calculate based on your own stats',
-            'Total, per-rank, and match count time and proficiency points (gain) estimates',
-            'Plan your journey to your goal using the planner',
-            'Use generic stats for all heroes if you play like the Top 500',
-            'Quick Match and Competitive mode estimates',
-            'Progression and data is stored permanently on your device',
-            'Export/Import your data across devices using .mrprof files',
-            'Add heroes if they are missing'
-        ],
-        images: [
-            '/img/seo/og-image.webp',
-            '/img/changelog/v1.0.0/hero-page.webp'
-        ]
-    },
-    {
-        version: {
-            number: '1.1.0',
-            date: 'Mar 26, 2026'
-        },
-        title: 'Improved Missing Hero Feature',
-        description: 'Added ability to convert a user-added missing hero to an existing hero in case it was added in the meantime',
-        images: [
-            '/img/changelog/v1.1.0/convert-hero.webp'
-        ]
-    },
-    {
-        version: {
-            number: '1.1.1',
-            date: 'Apr 9, 2026'
-        },
-        title: 'Improved Hero Generic Stats Visibility',
-        description: 'Added the ability to see generic average stats on a hero\'s page (not only in the landing page)',
-        images: [
-            '/img/changelog/v1.1.1/hero-stats.webp'
-        ]
-    },
-    {
-        version: {
-            number: '1.2.0',
-            date: 'Apr 10, 2026'
-        },
-        title: 'Arcade Mode',
-        description: 'Arcade Mode lets you type in your arcade stats (from any game mode, preferrably 18v18 Annihilation for fastest results) and get detailed estimates on how long it will take to get to your goal by playing arcade instead of Quick/Competitive matches.',
-        listTitle: 'Features',
-        list: [
-            'Set your Arcade average stats per 10 minutes',
-            'Personalised estimates (time and match count) for your arcade stats',
-            'Planner also includes arcade mode',
-            '<i>Arcade Mode <b>does not</b> have generic stats</i>'
-        ],
-        images: [
-            '/img/changelog/v1.2.0/average-stats-modal.webp',
-            '/img/changelog/v1.2.0/estimates.webp',
-            '/img/changelog/v1.2.0/estimates-rank.webp',
-            '/img/changelog/v1.2.0/planner.webp'
-        ]
-    },
-    {
-        version: {
-            number: '1.2.1',
-            date: 'Apr 13, 2026'
-        },
-        title: 'Added the Changelog',
-        description: 'Added this very changelog. You can now see all the updates and additions to the calculator, including new heroes and other QoL changes!',
-    },
-    {
-        version: {
-            number: '1.2.2',
-            date: 'Apr 14, 2026'
-        },
-        title: 'QoL changes and bug fixes',
-        description: `Made small improvements to the home page, hero pages, and fixed a few issues.
-        <br/>
-        You can now quickly change your current level by pressing on it!
-        `,
-        list: [
-            'Added "Go to hero" button in the home page under the Generic Hero Stats section',
-            'Added a shortcut to changing current level on the hero page by pressing on the level header (below the hero prestige image)',
-            'Fixed an issue with the sticky header of the hero list',
-            'Fixed an unknown long-standing issue with the active state (on click) of the main tabs on the hero pages. Now it shows a flicker of yellow just like the game client',
-            'Fixed an uncaught error with the math-enabled numerical inputs'
-        ]
-    },
-    {
-        version: {
-            number: '1.2.3',
-            date: 'Apr 14, 2026'
-        },
-        title: 'More QoL changes and bug fixes',
-        description: `Improved hero page (again) - it's now easier than ever to change your current level data, no more menu inception.
-        <br/>
-        Fixed some major issues with importing/downloading data.
-        `,
-        list: [
-            'Added ability to increase the current level by 1 just by pressing on it (now marked with a chevron) - resets proficiency points to 0',
-            'Added ability to drag/slide the proficiency points meter to set your proficiency points',
-            'Fixed "Download My Data" button downloading the selected hero\'s data instead of all the data when a hero was selected',
-            'Fixed Import data page not honoring the user choices of what heroes to overwrite (be it custom hero info or stats)',
-            'Added a visual interface to see what heroes are being imported which also allows to filter out heroes (stats or info - for custom heroes) when importing'
-        ],
-        images: [
-            '/img/changelog/v1.2.3/hero.webp',
-            '/img/changelog/v1.2.3/import.webp'
-        ]
-    }
-])
+const groupedCommits = groupCommitsByVersion((await getCommits()) as any);
+
+function commitMessageToHTML(message: string) {
+    message = message.replace(/((?:https?:\/\/|www\.)[^\s<>"{}|\\^`\[\]]+)/g, (_, url: string) => {
+        let punctuation = '';
+        const clean = url.replace(/([.,;:!)]+$)/g, (__, punc) => {
+            punctuation += punc;
+            return '';
+        });
+        return `<a href="${clean}" target="_blank">${clean}${punctuation}</a>`;
+    });
+
+    let [ title, ...rest ] = message.split('\n');
+    if (!title)
+        title = message;
+
+    return `
+        <h3>${title}</h3>
+        <p>${rest.join('<br>')}</p>
+    `
+}
+
+function formatCommitDate(dateString: string) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    return `${MONTHS[month]![0]} ${day}, ${year}`;
+}
 
 const entriesFiltered = computed(() => {
-    const entries = changelogEntries.value.toReversed();
+    const entries = CHANGELOG().toReversed();
     if (props.limit)
         entries.splice(props.limit, entries.length - props.limit);
 
@@ -417,7 +476,7 @@ const entriesFiltered = computed(() => {
 });
 
 function hasMore(entry: ChangeLogEntry, isLong = false) {
-    const hasMore = entry.list?.length || entry.images;
+    const hasMore = entry.list?.length || entry.images || !!groupedCommits.versionCommits[entry.version.number];
     if (!isLong)
         return hasMore;
     else

@@ -1,6 +1,9 @@
 <template>
     <div class="hero-list">
-        <div ref="tools" class="tools">
+        <div
+            ref="tools"
+            :class="{ tools: 1, mobile }"
+        >
             <NuxtLink v-if="backButton" class="back-button" :to="backButton">
                 <Tex
                     image="arrowLeft"
@@ -139,6 +142,8 @@ const roleDropdownOptions = [
     }
 ];
 
+const mobile = isMobile();
+
 const tools = useTemplateRef('tools');
 const searchInput = useTemplateRef('searchInput');
 
@@ -156,17 +161,36 @@ function getScrollParent(element: HTMLElement|null) {
     }
     return window; // fallback to viewport
 }
+const scroller = ref<Window|HTMLElement>();
 
 await useGsap(({ scrollTrigger }) => {
-    const scroller = getScrollParent(tools.value);
+    scroller.value = getScrollParent(tools.value);
+    if ((scroller.value as HTMLElement).tagName === 'BODY')
+        scroller.value = window;
 
     scrollTrigger.create({
         trigger: tools.value,
-        scroller,
+        scroller: scroller.value,
         start: 'top 0%',
         onEnter: () => tools.value?.classList.add('sticky'),
         onLeaveBack: () => tools.value?.classList.remove('sticky'),
     });
+
+    let lastKnownScrollY = 0;
+    useEvent('scroll', () => {
+        if (!mobile.value)
+            return;
+
+        const scrollY = (scroller.value as HTMLElement).scrollTop ?? (scroller.value as Window).scrollY;
+        const deltaY = scrollY - lastKnownScrollY;
+        lastKnownScrollY = scrollY;
+
+        // scrolling down
+        if (deltaY > 0)
+            tools.value?.classList.remove('sticky-mobile-show');
+        else
+            tools.value?.classList.add('sticky-mobile-show');
+    }, scroller.value);
 });
 
 const unknownHeroes = useLocalStorage<HeroData[]>('unknown_heroes', []);

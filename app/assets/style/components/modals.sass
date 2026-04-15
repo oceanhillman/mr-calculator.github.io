@@ -41,9 +41,12 @@
     overflow-y: auto
 
     +media-mobile
-        padding-bottom: 85px + 20px
+        padding-bottom: 85px + 10px
         overflow-x: hidden
         overflow-y: auto
+        
+        +mediaIOS
+            padding-bottom: calc(85px + 10px + env(safe-area-inset-bottom))
 
     +media-tablet
         background-size: 120% 100%
@@ -57,16 +60,20 @@
         // max-height: 80vh
 
     h2
-        font-size: 50px
+        font-size: 30px
         font-family: RefrigeratorDeluxeHeavy
         font-weight: normal
         font-style: italic
         text-transform: uppercase
         text-align: center
-        line-height: 50px
+        line-height: 30px
 
         +media-mobile
             padding: 0 20px
+
+        +media-desktop
+            font-size: 50px
+            line-height: 50px
 
     p
         font-size: 20px
@@ -82,10 +89,11 @@
         width: 85%
         filter: brightness(0.4)
 
-        margin-bottom: 40px
+        margin-bottom: 0px
 
         +media-desktop
             width: 900px
+            margin-bottom: 40px
 
     .modal-input
         width: 650px

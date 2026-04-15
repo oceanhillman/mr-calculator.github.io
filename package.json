@@ -15,7 +15,8 @@
     "gather-top-players": "npx tsx ./scripts/stats/gather-top-players.ts",
     "scrape-heroes": "npx tsx ./scripts/stats/scrape-heroes.ts",
     "convert-images": "npx tsx ./scripts/convert-images.ts",
-    "add-hero": "npx tsx ./scripts/add-hero/index.ts"
+    "add-hero": "npx tsx ./scripts/add-hero/index.ts",
+    "fetch-commits": "node scripts/fetch-commits.js"
   },
   "devDependencies": {
     "@clack/prompts": "^1.1.0",

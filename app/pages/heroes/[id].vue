@@ -22,6 +22,7 @@
                 <div class="title">
                     <h1>{{ hero.name }}</h1>
                     <Tex
+                        class="favourite"
                         image="favourite"
                         :state="isFavourite ? 'hover' : 'default'"
                         hover="auto"
@@ -34,23 +35,24 @@
                         @click="toggleFavourite"
                     />
                 </div>
-            </div>
-            <div
-                class="menu warning-wrapper"
-                @click="setPage(page == 'overview' ? 'calculator' : 'overview')"
-            >
-                <img
-                    class="menu-icon"
-                    :src="page == 'overview' ? tex('calculator') : tex('hamburger')"
-                />
 
-                <Tex
-                    v-if="!storedLevel.openedCalculator"
-                    class="warning-bubble"
-                    image="redDotExcl"
+                <div
+                    class="menu warning-wrapper"
+                    @click="setPage(page == 'overview' ? 'calculator' : 'overview')"
+                >
+                    <img
+                        class="menu-icon"
+                        :src="page == 'overview' ? tex('calculator') : tex('hamburger')"
+                    />
 
-                    object-fit="contain"
-                />
+                    <Tex
+                        v-if="!storedLevel.openedCalculator"
+                        class="warning-bubble"
+                        image="redDotExcl"
+
+                        object-fit="contain"
+                    />
+                </div>
             </div>
             <!-- @click="menuOpen = !menuOpen" -->
 
@@ -652,6 +654,13 @@ function pointsDragEnd() {
 
 useEvent(['pointermove', 'touchmove'], pointsDragMove);
 useEvent(['pointerup', 'touchend'], pointsDragEnd);
+
+useEvent('touchmove', (e: TouchEvent) => {
+    if (pointsIsDragging.value)
+        e.preventDefault();
+    else
+        return true;
+}, undefined, { passive: false });
 
 function modifyHeroData() {
     openModal(ModifyHeroData, {

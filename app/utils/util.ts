@@ -95,22 +95,22 @@ export function toDateAndTime(time: number|string|Date) {
     return date.toLocaleDateString() + " " + date.toLocaleTimeString();
 }
 
-export function toRelativeFancyDate(time: number|string|Date) {
-    const MONTHS = [
-        ['Jan', 'January'],
-        ['Feb', 'February'],
-        ['Mar', 'March'],
-        ['Apr', 'April'],
-        ['May', 'May'],
-        ['Jun', 'June'],
-        ['Jul', 'July'],
-        ['Aug', 'August'],
-        ['Sep', 'September'],
-        ['Oct', 'October'],
-        ['Nov', 'November'],
-        ['Dec', 'December']
-    ];
+export const MONTHS = [
+    ['Jan', 'January'],
+    ['Feb', 'February'],
+    ['Mar', 'March'],
+    ['Apr', 'April'],
+    ['May', 'May'],
+    ['Jun', 'June'],
+    ['Jul', 'July'],
+    ['Aug', 'August'],
+    ['Sep', 'September'],
+    ['Oct', 'October'],
+    ['Nov', 'November'],
+    ['Dec', 'December']
+];
 
+export function toRelativeFancyDate(time: number|string|Date) {
     const now = new Date();
 
     const date = new Date(time);

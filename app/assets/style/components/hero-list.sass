@@ -22,18 +22,29 @@
             flex-direction: column
 
         &.sticky
+
+            &.mobile
+                transform: translateY(calc(-100% - 20px))
+                transition: transform .2s ease
+
+                &.sticky-mobile-show
+                    transform: translateY(0%)
             
             &::before
                 content: ""
                 position: absolute
                 top: -10px
-                left: -50px
-                right: -50px
+                left: -20px
+                right: -20px
                 bottom: -10px
 
                 background: $blue
 
                 z-index: -1
+
+                +media-desktop
+                    left: -50px
+                    right: -50px
 
             .back-button
                 +media-desktop
