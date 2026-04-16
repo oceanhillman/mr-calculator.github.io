@@ -1,5 +1,47 @@
 [
   {
+    "sha": "6c7d1c2c1a021267ac39c88542e1708bc0e35503",
+    "node_id": "C_kwDORv7rQ9oAKDZjN2QxYzJjMWEwMjEyNjdhYzM5Yzg4NTQyZTE3MDhiYzBlMzU1MDM",
+    "commit": {
+      "author": {
+        "name": "mr-calculator",
+        "email": "mr-calculator.estimate510@slmails.com",
+        "date": "2026-04-16T22:28:49Z"
+      },
+      "committer": {
+        "name": "mr-calculator",
+        "email": "mr-calculator.estimate510@slmails.com",
+        "date": "2026-04-16T22:28:49Z"
+      },
+      "message": "Improved add-hero script in preparation for Black Cat\n\nAdded ability to refresh full hero, images and stats\nMade console prompts better\nFixed add-hero script's image copying function throwing an error because .env was not automatically added to the compile output, since it uses npx tsx and is, hence, not part of the project (slight oversight without testing on my part).\nFixed an issue with displaying heroes in the landing page (in the credibility section) that had no generic average stats, bricking the page completely.",
+      "tree": {
+        "sha": "85b9dc91b503dd1dfd188532a4c895014519be6e",
+        "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/git/trees/85b9dc91b503dd1dfd188532a4c895014519be6e"
+      },
+      "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/git/commits/6c7d1c2c1a021267ac39c88542e1708bc0e35503",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/6c7d1c2c1a021267ac39c88542e1708bc0e35503",
+    "html_url": "https://github.com/mr-calculator/mr-calculator.github.io/commit/6c7d1c2c1a021267ac39c88542e1708bc0e35503",
+    "comments_url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/6c7d1c2c1a021267ac39c88542e1708bc0e35503/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "fbf59b9a4a7128f8162e4b54f84349e66a8440d5",
+        "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/fbf59b9a4a7128f8162e4b54f84349e66a8440d5",
+        "html_url": "https://github.com/mr-calculator/mr-calculator.github.io/commit/fbf59b9a4a7128f8162e4b54f84349e66a8440d5"
+      }
+    ]
+  },
+  {
     "sha": "fbf59b9a4a7128f8162e4b54f84349e66a8440d5",
     "node_id": "C_kwDORv7rQ9oAKGZiZjU5YjlhNGE3MTI4ZjgxNjJlNGI1NGY4NDM0OWU2NmE4NDQwZDU",
     "commit": {

@@ -807,7 +807,12 @@ await useGsap(({ gsap, scrollTrigger, splitText }) => {
 
 // ====================
 // promo hero
-const featuredHero = getFeaturedHero();
+const featuredHero = ref(getFeaturedHero());
+
+onMounted(() => {
+    // do it every mounted to check date again (and avoid service worker shenanigans)
+    featuredHero.value = getFeaturedHero();
+});
 
 //====================
 
