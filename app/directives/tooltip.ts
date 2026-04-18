@@ -16,6 +16,9 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
         if (!binding.value)
             return;
 
+        if (isTouchDevice().value)
+            return;
+
         stateMap.set(el, binding.value);
 
         const { tooltip, show, hide } = useTooltip();
@@ -48,9 +51,20 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
         }, el);
     },
     updated(el, binding) {
+        const { tooltip, hide } = useTooltip();
+
+        if (!binding.value) {
+            stateMap.delete(el);
+            hide(el);
+
+            return;
+        }
+
+        if (isTouchDevice().value)
+            return;
+
         stateMap.set(el, binding.value);
 
-        const { tooltip } = useTooltip();
         // reset tooltip only if this is hovered
         if (tooltip.value?.element != el)
             return;
@@ -68,11 +82,7 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
     unmounted(el, binding) {
         stateMap.delete(el);
 
-        if (!binding.value)
-            return;
-
         const { hide } = useTooltip();
-
         hide(el);
     }
 }

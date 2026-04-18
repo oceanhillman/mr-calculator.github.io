@@ -141,7 +141,7 @@
                                         @click="credibilityClickHero(hero.heroId)"
 
                                         v-tooltip="({
-                                            text: `See average stats for ${hero.heroName}`,
+                                            text: `See <b>average stats</b>`,
                                             icon: 'mouseLeft'
                                         } satisfies TooltipBinding)"
                                     >
