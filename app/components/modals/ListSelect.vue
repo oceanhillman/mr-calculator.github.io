@@ -24,6 +24,8 @@
                 :selected-item="selectedLevel"
                 :show-all-levels="showAllLevels"
 
+                no-tooltip
+
                 :contrast-mode="true"
                 :id-prefix="title"
 

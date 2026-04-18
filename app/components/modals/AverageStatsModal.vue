@@ -17,7 +17,7 @@
                         height="26px"
                         object-fit="contain"
                     />
-                    <p>Need help?</p>
+                    <p>Where to find my average stats?</p>
                 </div>
 
                 <div

@@ -209,6 +209,10 @@
                     :hero="newHero"
                     small
                     clickable
+                    :mission-hover-tooltip="rankId => ({
+                        text: `Edit mission at rank <b>${PROFICIENCY_RANKS[rankId]?.name}</b>`,
+                        icon: 'mouseLeft'
+                    })"
 
                     @item-click="(rankId, _, challengeIndex) => startEditMission(rankId, challengeIndex)"
                     v-model="selectedRank"
@@ -367,6 +371,7 @@ import { guessChallenge } from '~/assets/data/converge';
 import { HERO_LIST, UNKNOWN_HERO } from '~/assets/data/heroes';
 import { tex } from '~/assets/data/textures';
 import type { Option } from '../form/Dropdown.vue';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const { notify } = useNotificationManager();
 

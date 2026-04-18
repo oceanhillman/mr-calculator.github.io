@@ -192,7 +192,15 @@
                             />
                         </div>
 
-                        <div class="current" @click="selectCurrentLevel()">
+                        <div
+                            class="current"
+                            @click="selectCurrentLevel()"
+
+                            v-tooltip="({
+                                text: `Select <b>current level</b>`,
+                                icon: 'mouseLeft'
+                            } satisfies TooltipBinding)"
+                        >
                             <div class="rank">
                                 <div class="icon">
                                     <img :src="currentRankComp.rank.icon" />
@@ -202,7 +210,10 @@
                             <div
                                 :class="{ level: 1, 'can-level-up': canLevelUp.state }"
                                 @click.stop="levelUp"
-                                :title="canLevelUp.state ? 'Level Up' : undefined"
+                                v-tooltip="canLevelUp.state ? ({
+                                    text: `Level up`,
+                                    icon: 'mouseLeft'
+                                } satisfies TooltipBinding) : undefined"
                             >
                                 <Tex
                                     v-if="canLevelUp.state"
@@ -230,6 +241,11 @@
                                     width="22px"
                                     height="22px"
                                     object-fit="contain"
+
+                                    v-tooltip="({
+                                        text: 'Set <b>proficiency points</b>',
+                                        icon: 'mouseLeft'
+                                    } satisfies TooltipBinding)"
                                 >
                                     <p>
                                         {{ currentRankComp.points }}
@@ -243,7 +259,14 @@
                                     v-model="storedLevel.points"
                                 />
                             </div>
-                            <div class="set warning-wrapper" @click="modifyHeroData">
+                            <div
+                                class="set warning-wrapper"
+                                @click="modifyHeroData"
+                                v-tooltip="({
+                                    text: `${hero.name} <b>options</b>`,
+                                    icon: 'mouseLeft'
+                                } satisfies TooltipBinding)"
+                            >
                                 <Tex
                                     image="userCog"
                                     hover="auto"
@@ -294,6 +317,11 @@
                             :checked="obtainedRewards"
                             :selectedItemSpecial="true"
                             :selected-item="storedLevel.goal"
+
+                            :tooltip="{
+                                text: `Set as <b>goal</b>`,
+                                icon: 'mouseLeft'
+                            }"
 
                             @reward-click="setGoal"
                         />
@@ -386,7 +414,8 @@
                     container-class="tab-container"
 
                     :slot-labels="{
-                        normal: 'QUICK/COMP'
+                        normal: 'QUICK/COMP',
+                        arcade: 'ARCADE (18V18)'
                     }"
                 >
                     <template #normal>
@@ -499,6 +528,7 @@ import ConfirmModal from '~/components/modals/ConfirmModal.vue';
 import { useAbsoluteUrl } from '~/composables/config';
 import ConvertUnknownHeroModal from '~/components/modals/ConvertUnknownHeroModal.vue';
 import ProficiencyPointsModal from '~/components/modals/ProficiencyPointsModal.vue';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const { openModal } = useModalManager();
 const { notify } = useNotificationManager();

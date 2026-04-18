@@ -47,12 +47,23 @@
             v-if="!!featuredHero"
             :is="links ? NuxtLink : 'div'"
             class="featured-hero"
-            
-            :to="`/heroes/${featuredHero.hero.id}`"
-            @click="clickHero(featuredHero.hero.id)"
+
             :style="{
                 '--hero-color': featuredHero.hero.color
             }"
+
+            :to="`/heroes/${featuredHero.hero.id}`"
+            @click="clickHero(featuredHero.hero.id)"
+
+            v-tooltip="{
+                text: favourites.includes(featuredHero.hero.id) ?
+                    '<b>Remove</b> from favorites'
+                    :
+                    '<b>Add</b> to favorites',
+                icon: 'mouseRight'
+            }"
+
+            @contextmenu.prevent="favouriteHero(featuredHero.hero.id)"
         >
             <div class="color-mask" />
 
@@ -105,34 +116,6 @@
             </div>
         </component>
         <ul class="list">
-            <!-- <li
-                v-if="!!featuredHero"
-                :key="featuredHero.hero.id"
-            >
-                <component
-                    :is="links ? NuxtLink : 'div'"
-                    :to="`/heroes/${featuredHero.hero.id}`"
-
-                    @click="clickHero(featuredHero.hero.id)"
-                >
-                    <div class="promo-hero">
-
-                    </div>
-
-                    <PanelHeroCard
-                        :id="featuredHero.hero.id"
-                        :name="featuredHero.hero.name"
-                        :roles="featuredHero.hero.roles"
-                        :color="featuredHero.hero.color"
-                        :portrait="`${featuredHero.hero.dataDir}portrait.webp`"
-
-                        :is-favourite="favourites.includes(featuredHero.hero.id)"
-                        :is-checked="selectedHero == featuredHero.hero.id"
-                        :rank="featuredHero.level.rank"
-                    />
-                </component>
-            </li> -->
-
             <li v-if="addHeroEnabled && filterByRole == 'all-roles' && !filterFavourites && !searchText">
                 <component
                     :is="links ? NuxtLink : 'div'"
@@ -155,6 +138,16 @@
             <li
                 v-for="{hero, level} in heroList"
                 :key="hero.id"
+
+                v-tooltip="({
+                    text: favourites.includes(hero.id) ?
+                        '<b>Remove</b> from favorites'
+                        :
+                        '<b>Add</b> to favorites',
+                    icon: 'mouseRight'
+                } satisfies TooltipBinding)"
+
+                @contextmenu.prevent="favouriteHero(hero.id)"
             >
                 <component
                     :is="links ? NuxtLink : 'div'"
@@ -186,6 +179,7 @@ import { NuxtLink } from '#components';
 import { DEFAULT_HERO_STORE, PROFICIENCY_RANKS, ROLE_ICONS, type HeroData, type HeroRole, type PlayerHeroStore } from '~/assets/data/common';
 import { getFeaturedHero, HERO_LIST, heroRolesAsArray } from '~/assets/data/heroes';
 import { tex, texUrl } from '~/assets/data/textures';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const props = withDefaults(defineProps<{
     selectedHero?: string,
@@ -362,6 +356,14 @@ function clickHero(heroId: string) {
         return;
 
     emit('clickHero', heroId);
+}
+
+function favouriteHero(heroId: string) {
+    const idx = favourites.value.indexOf(heroId);
+    if (idx !== -1)
+        favourites.value.splice(idx, 1);
+    else
+        favourites.value.push(heroId);
 }
 
 

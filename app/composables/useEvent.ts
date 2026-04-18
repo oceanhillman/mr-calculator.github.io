@@ -17,8 +17,6 @@ export const useEvent = <K extends EventKey>(
     if (!element)
         element = window;
 
-    const isMounted = ref(false);
-
     const addEvents = () => {
         if (Array.isArray(events))
             events.forEach(e => element?.addEventListener(e, handler, options));
@@ -32,15 +30,21 @@ export const useEvent = <K extends EventKey>(
             element?.removeEventListener(events, handler, options);
     }
 
-    onMounted(() => {
-        isMounted.value = true;
-        addEvents();
-    });
-
-    onUnmounted(removeEvents);
-
-    // if the onMounted was not called, add event now
-    if (!isMounted.value)
+    // if this runs outside a component/page instance, add directly
+    // also add if registered after on mounted, keeping removing functionality
+    const instance = getCurrentInstance();
+    if (instance) {
+        if (instance.isMounted && !instance.isUnmounted) {
+            // already mounted, add immediately
+            addEvents();
+            onUnmounted(removeEvents);
+        }
+        else {
+            onMounted(addEvents);
+            onUnmounted(removeEvents);
+        }
+    }
+    else
         addEvents();
 
     return {

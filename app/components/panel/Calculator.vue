@@ -395,12 +395,18 @@
                             last: rank.last,
                             dimmed: displayTimeRank !== null && displayTimeRank != rank.rank.id,
                             selected: displayTimeRank == rank.rank.id,
+                            completed: rank.completed
                         }"
                         :style="{
                             '--index': rankIndex(index, rank)
                         }"
 
                         @click="setDisplayTimeToRank(rank.rank.id)"
+
+                        v-tooltip="!rank.completed ? ({
+                            text: displayTimeRank != rank.rank.id ? 'View details' : 'Hide details',
+                            icon: 'mouseLeft'
+                        } satisfies TooltipBinding) : undefined"
                     >
                         <div class="icon">
                             <img :src="rank.rank.icon" />
@@ -495,6 +501,7 @@
 <script setup lang="ts">
 import HorizontalScrollContainer from './HorizontalScrollContainer.vue'
 import { AVG_ARCADE_MATCH_DURATION_MIN, AVG_COMP_MATCH_DURATION_MIN, AVG_QUICK_MATCH_DURATION_MIN, levelToRank, PROFICIENCY_RANKS, type HeroData, type PlayerHeroStore, type ProficiencyRank, type Rank, type Reward } from '~/assets/data/common';
+import type { TooltipBinding } from '~/directives/tooltip';
 import { type PersonalRankTimeEstimate } from '~/services/calculator';
 
 const props = withDefaults(defineProps<{

@@ -11,27 +11,39 @@
     justify-content: center
     gap: var(--gap)
 
-    &.contrast
+    &:not(.no-clicking).contrast .level-rewards:hover,
+    &.contrast .level-rewards.selected
+        .level-title
+            background: $blue
 
+            h3
+                color: #fff
+
+    &:not(.no-clicking)
         .level-rewards
             &:hover,
+            &.checked:hover,
             &.selected
                 .level-title
-                    background: $blue
+                    background: #fff
 
-                    h3
-                        color: #fff
+            .reward-list
+                .reward
+                    cursor: pointer
+
+                    &:hover
+                        .image
+                            img
+                                transform: scale(1.05)
+
+                        .name
+                            background: #fff
+
 
     .level-rewards
         display: flex
         flex-direction: column
         gap: 10px
-
-        &:hover,
-        &.checked:hover,
-        &.selected
-            .level-title
-                background: #fff
 
         &.selected
             &.special
@@ -66,16 +78,7 @@
                 flex-direction: column
                 gap: 5px
 
-                cursor: pointer
                 user-select: none
-
-                &:hover
-                    .image
-                        img
-                            transform: scale(1.05)
-
-                    .name
-                        background: #fff
 
                 .image
                     position: relative

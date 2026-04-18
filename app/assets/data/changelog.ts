@@ -247,7 +247,8 @@ export const CHANGELOG = (): ChangeLogEntry[] => [
         version: {
             number: '1.2.6',
             date: 'Apr 17, 2026',
-            time: '10:12 PM',
+            time: '10:14 PM',
+            commitSha: 'cfdcb05a8debe37c7bac67b49cad906a125edf17'
         },
         title: 'Hero Page UI/UX Improvements',
         description: `Reworked the Hero page to have better UX and be less confusing, using more tabs and less hidden menus.`,
@@ -260,6 +261,15 @@ export const CHANGELOG = (): ChangeLogEntry[] => [
         images: [
             '/img/changelog/v1.2.6/hero-page.webp',
         ]
+    },
+    {
+        version: {
+            number: '1.2.7',
+            date: 'Apr 18, 2026',
+            time: '10:01 PM',
+        },
+        title: 'Added tooltips',
+        description: `Added tooltips to help with UI confusion here and there. Made other small fixes.`,
     }
 ];
 

@@ -1,5 +1,5 @@
 <template>
-    <div :class="{rewards:1, contrast: contrastMode}">
+    <div :class="{rewards: 1, contrast: contrastMode, 'no-clicking': noClicking}">
         <div
             v-for="[level, [rewards, rank]] in aggregatedRewards"
             :key="`${hero.id}_${level}`"
@@ -12,6 +12,8 @@
             }"
 
             @click="$emit('rewardClick', level)"
+
+            v-tooltip="noClicking ? undefined : tooltip"
         >
             <div class="reward-list">
                 <div
@@ -66,6 +68,7 @@
 <script setup lang="ts">
 import { levelToRank, replaceRewardPlaceholders, type HeroData, type ProficiencyRank, type Reward } from '~/assets/data/common';
 import { tex } from '~/assets/data/textures';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const props = defineProps<{
     hero: HeroData,
@@ -76,6 +79,9 @@ const props = defineProps<{
     contrastMode?: boolean,
     selectedItemSpecial?: boolean,
     idPrefix?: string,
+
+    noClicking?: boolean,
+    tooltip?: TooltipBinding
 }>();
 
 const emit = defineEmits<{

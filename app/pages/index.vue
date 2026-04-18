@@ -139,12 +139,22 @@
                                     <div
                                         class="avatar"
                                         @click="credibilityClickHero(hero.heroId)"
+
+                                        v-tooltip="({
+                                            text: `See average stats for ${hero.heroName}`,
+                                            icon: 'mouseLeft'
+                                        } satisfies TooltipBinding)"
                                     >
                                         <img :src="hero._hero.dataDir + 'spray.webp'" :alt="`${hero.heroName} Logo (Spray)`" />
                                     </div>
                                     <div
                                         class="inner"
                                         @click="credibilityClickHero(hero.heroId)"
+
+                                        v-tooltip="({
+                                            text: `See <b>average stats</b>`,
+                                            icon: 'mouseLeft'
+                                        } satisfies TooltipBinding)"
                                     >
                                         <template v-if="hero.matchCount">
                                             <h3>{{ hero.matchCount?.toLocaleString() ?? 0 }}</h3>
@@ -251,6 +261,7 @@
                         class="_gsap-hero-reward-container with-border-decorations"
                         :hero="currentHero"
                         contrast-mode
+                        no-clicking
                     />
                 </div>
             </section>
@@ -547,6 +558,7 @@ import { usePwaInstall } from '~/composables/usePwaInstall';
 import { Calculator } from '~/services/calculator';
 import type HorizontalScrollContainer from '~/components/panel/HorizontalScrollContainer.vue';
 import FeaturedHeroPromo from '~/components/panel/FeaturedHeroPromo.vue';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 useSeoMeta({
     title: 'Marvel Rivals Proficiency Calculator',

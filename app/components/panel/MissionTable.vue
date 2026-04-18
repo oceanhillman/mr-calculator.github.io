@@ -21,9 +21,10 @@
             <ul>
                 <li
                     v-for="(challenge, index) in currentChallenges"
-                    class="mission"
+                    :class="{ mission: 1, 'no-hover': index == 0 }"
 
                     @click="$emit('itemClick', selectedRank, challenge, index)"
+                    v-tooltip="index != 0 ? missionHoverTooltip?.(selectedRank, challenge, index) : undefined"
                 >
                     <div class="repeats-icon">
                         <Tex
@@ -61,7 +62,7 @@
             <ul>
                 <li
                     v-for="challenge in currentChallenges"
-                    class="mission"
+                    class="mission no-hover"
                 >
                     <div class="repeats-icon">
                         <Tex
@@ -100,11 +101,13 @@
 
 <script setup lang="ts">
 import { CHALLENGE_TEXTS, NO_DAILY_POINTS_ATTENUATION_RANK_IDS, PROFICIENCY_RANKS, type Challenge, type HeroData, type ProficiencyRank } from '~/assets/data/common';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const props = defineProps<{
     hero: HeroData,
     small?: boolean,
-    clickable?: boolean
+    clickable?: boolean,
+    missionHoverTooltip?: (rankId: string, challenge: Challenge, challengeIndex: number) => TooltipBinding
 }>();
 
 const emit = defineEmits<{

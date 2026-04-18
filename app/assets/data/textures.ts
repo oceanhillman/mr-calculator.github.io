@@ -152,8 +152,29 @@ export const TEX = {
     gameTime: {
         default: 'icon/game-time.png'
     } as Texture,
+    mouseScrollUp: {
+        default: 'icon/mouse-scroll-up.png'
+    } as Texture,
+    mouse: {
+        default: 'icon/mouse.png'
+    } as Texture,
+    mouseLeft: {
+        default: 'icon/mouse-left.png'
+    } as Texture,
+    mouseRight: {
+        default: 'icon/mouse-right.png'
+    } as Texture,
     mouseScroll: {
         default: 'icon/mouse-scroll.png'
+    } as Texture,
+    mouseScrollClick: {
+        default: 'icon/mouse-scroll-click.png'
+    } as Texture,
+    mouseScrollDown: {
+        default: 'icon/mouse-scroll-down.png'
+    } as Texture,
+    mouseDrag: {
+        default: 'icon/mouse-drag.png'
     } as Texture,
     hamburger: {
         default: 'icon/hamburger.png'

@@ -18,6 +18,11 @@
             <div class="drag-area"
                 @pointerdown="pointsDragStart"
                 @touchstart="pointsDragStart"
+
+                v-tooltip="({
+                    text: 'Drag to set <b>proficiency points<b>',
+                    icon: 'mouseDrag'
+                } satisfies TooltipBinding)"
             />
 
             <div class="inner" />
@@ -70,6 +75,7 @@
 
 <script setup lang="ts">
 import { DEFAULT_HERO_STORE, PROFICIENCY_RANKS, type HeroData, type PlayerHeroStore } from '~/assets/data/common';
+import type { TooltipBinding } from '~/directives/tooltip';
 
 const props = defineProps<{
     hero: HeroData,
