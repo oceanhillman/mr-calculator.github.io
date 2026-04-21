@@ -90,7 +90,7 @@
                 </li>
             </ul>
             <div v-if="!small" class="info">
-                Repeatable up to <span>15x</span> every 24h; Resets 9:00:00 (UTC+0)<br/>
+                Repeatable up to <span>15x</span> every 24h; Resets {{ getResetTime() }}<br/>
                 Modes: Arcade (matchmaking)
             </div>
         </div>
@@ -119,6 +119,41 @@ const selectedRank = defineModel<ProficiencyRank['id']>({ default: 'agent' });
 const currentChallenges = computed(() => props.hero.ranks.find(
     r => r.type.id == selectedRank.value)?.challenges?.filter(Boolean) ?? [] as Challenge[]
 );
+
+function getResetTime() {
+    const now = new Date()
+
+    // create "today at 09:00 UTC"
+    const utcNine = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        9, 0, 0
+    ))
+
+    // only time
+    const localTime = utcNine.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    // get utc offset
+    const offsetMin = -new Date().getTimezoneOffset();
+    const sign = offsetMin >= 0 ? '+' : '-';
+
+    const hours = Math.floor(Math.abs(offsetMin) / 60);
+    const minutes = Math.abs(offsetMin) % 60;
+
+    const formattedOffset = `UTC${sign}${hours}${minutes ? ':' + minutes.toString().padStart(2, '0') : ''}`;
+
+    // get timezone name if any
+    const parts = new Intl.DateTimeFormat(undefined, {
+        timeZoneName: 'short'
+    }).formatToParts(new Date())
+    const tzName = parts.find(p => p.type === 'timeZoneName')?.value
+
+    return `${localTime} (${tzName ?? formattedOffset})`;
+}
 
 function generateChallengeText(type: Challenge['type'], needed: number) {
     return CHALLENGE_TEXTS[type].replaceAll('%NEEDED%', needed.toLocaleString(undefined, {maximumFractionDigits: 0}));

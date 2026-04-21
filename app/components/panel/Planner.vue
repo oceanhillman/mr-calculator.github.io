@@ -47,26 +47,36 @@
                 />
             </div>
         </template>
-        <div v-if="hasAvgArcadeStats" class="option">
-            <div class="label">
-                What game modes?
-            </div>
-            <FormToggle
-                class="input toggle"
+        <template v-if="hasAvgArcadeStats">
+            <div class="option">
+                <div class="label">
+                    What game modes?
+                </div>
+                <FormToggle
+                    class="input toggle"
 
-                large
-                both
-                :model-value="level.planner.gameMode == 'arcade'"
-                @update:model-value="level.planner.gameMode = $event ? 'arcade' : 'normal'"
-            >
-                <template #off>
-                    Quick/Comp
-                </template>
-                <template #on>
-                    Arcade (18v18)
-                </template>
-            </FormToggle>
-        </div>
+                    large
+                    both
+                    :model-value="level.planner.gameMode == 'arcade'"
+                    @update:model-value="level.planner.gameMode = $event ? 'arcade' : 'normal'"
+                >
+                    <template #off>
+                        Quick/Comp
+                    </template>
+                    <template #on>
+                        Arcade (18v18)
+                    </template>
+                </FormToggle>
+            </div>
+            <div class="option">
+                <div class="label">
+                    Max daily missions
+                </div>
+                <FormArcadeFeasableMissionsSelect
+                    :hero="hero"
+                />
+            </div>
+        </template>
         <div v-else class="option">
             <div class="label">
                 If you want to see arcade options

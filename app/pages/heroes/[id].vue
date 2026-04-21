@@ -601,10 +601,11 @@ if (heroId == 'new') {
 if (!hero.value)
     throw createError({ statusCode: 404, message: `Hero doesn't exist!`, stack: `` });
 
-let description = `View all proficiency rewards, see time estimates to reach set goals, and plan your grind for ${hero.value.name} in Marvel Rivals.`;
+let description: string|undefined = `View all proficiency rewards, see time estimates to reach set goals, and plan your grind for ${hero.value.name} in Marvel Rivals.`;
 
 // custom seo is ssr only for prerendering
-if (import.meta.server && !!getAverageStatsForHero(hero.value.id)) {
+const hasGenericAvgStats = !!getAverageStatsForHero(hero.value.id);
+if (import.meta.server && hasGenericAvgStats) {
     const estimates = calculateTimesToLevel(hero.value, {
         level: 1,
         points: 0,
@@ -634,6 +635,8 @@ if (import.meta.server && !!getAverageStatsForHero(hero.value.id)) {
     if (totalTimeToFinish != 0)
         description = `View all proficiency rewards, see time estimates to reach set goals, and plan your grind for ${hero.value.name} in Marvel Rivals. It takes ${secondsToHoursString(totalTimeToLord)}h on average to get Lord on ${hero.value.name}, ${secondsToHoursString(totalTimeToChampion)}h to get the animated icon and ${secondsToHoursString(totalTimeToFinish)}h total for the Legendary title. Do you think you can get them faster?`;
 }
+else if (import.meta.client && hasGenericAvgStats)
+    description = undefined;
 
 useSeoMeta({
     title: `${hero.value.name} | MR Proficiency Calculator`,

@@ -306,7 +306,6 @@ export const CHANGELOG = (): ChangeLogEntry[] => [
         description: `Added Arcade Mode duration feature which estimates the real time in days it will take to reach a goal on a hero based on personal average stats and mission limits. Customizable with a "Daily missions to complete" selector, where users can select a number of missions they are willing to complete (all 15 of the daily ones) before switching to a different mode or stopping to wait for the next day.
         <br/>
         Planner now takes arcade mission limits into consideration`,
-        // TODO CHANGE PLANNER, COMMIT LATER
         list: [
             'Added Arcade Mode duration feature',
             'Added Arcade Mode to Planner',

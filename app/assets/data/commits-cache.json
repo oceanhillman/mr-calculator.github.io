@@ -1,5 +1,47 @@
 [
   {
+    "sha": "1d29209f915c640de7f4c98e390e24f3d8fbe636",
+    "node_id": "C_kwDORv7rQ9oAKDFkMjkyMDlmOTE1YzY0MGRlN2Y0Yzk4ZTM5MGUyNGYzZDhmYmU2MzY",
+    "commit": {
+      "author": {
+        "name": "mr-calculator",
+        "email": "mr-calculator.estimate510@slmails.com",
+        "date": "2026-04-20T04:25:07Z"
+      },
+      "committer": {
+        "name": "mr-calculator",
+        "email": "mr-calculator.estimate510@slmails.com",
+        "date": "2026-04-20T04:25:07Z"
+      },
+      "message": "Added Arcade Mode precise estimates\nAdded Arcade Mode duration feature which estimates the real time in days it will take to reach a goal on a hero based on personal average stats and mission limits. Customizable with a \"Daily missions to complete\" selector, where users can select a number of missions they are willing to complete (all 15 of the daily ones) before switching to a different mode or stopping to wait for the next day.\nPlanner now takes arcade mission limits into consideration\n\nAdded Arcade Mode duration feature\nAdded Arcade Mode to Planner\nChanged some types to use zod infer from schema, now with defaults built in\nFixed a styling issue (on hover) with the reward/level selector\nFixed a bug related to the hero data list (landing page) and other places where the HorizontalScrollContainer component was used that, after excessive scrolling caused intense lag on the entire website due to usage of refs bound to style attributes. Switched to manual (vanilla JS) setting of translations\nFixed tooltips leaving event listeners behind due to an oversight\nFixed tooltips going outside of viewport and limited their width\nChanged versions of previous changelog entries that were not following the version update scheme (oops, forgot)\nAdded Reddit social link pointing to the mr-prof-calculator account",
+      "tree": {
+        "sha": "a6473e0b888c802ecde9816b21d2db0a578eec1d",
+        "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/git/trees/a6473e0b888c802ecde9816b21d2db0a578eec1d"
+      },
+      "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/git/commits/1d29209f915c640de7f4c98e390e24f3d8fbe636",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/1d29209f915c640de7f4c98e390e24f3d8fbe636",
+    "html_url": "https://github.com/mr-calculator/mr-calculator.github.io/commit/1d29209f915c640de7f4c98e390e24f3d8fbe636",
+    "comments_url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/1d29209f915c640de7f4c98e390e24f3d8fbe636/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "faad47d7d8fb0f65e75cab53fede8caf444ae73c",
+        "url": "https://api.github.com/repos/mr-calculator/mr-calculator.github.io/commits/faad47d7d8fb0f65e75cab53fede8caf444ae73c",
+        "html_url": "https://github.com/mr-calculator/mr-calculator.github.io/commit/faad47d7d8fb0f65e75cab53fede8caf444ae73c"
+      }
+    ]
+  },
+  {
     "sha": "faad47d7d8fb0f65e75cab53fede8caf444ae73c",
     "node_id": "C_kwDORv7rQ9oAKGZhYWQ0N2Q3ZDhmYjBmNjVlNzVjYWI1M2ZlZGU4Y2FmNDQ0YWU3M2M",
     "commit": {

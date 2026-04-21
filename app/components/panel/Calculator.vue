@@ -511,51 +511,10 @@
             </PanelHorizontalScrollContainer>
         </Transition>
         <div :class="{'bottom-options': 1, arcade: selectedGameType == 'arcade'}">
-            <div v-if="selectedGameType == 'arcade'" class="arcade-mission-select">
-                <Tex
-                    image="missionRepeat15"
-
-                    width="30px"
-                    height="30px"
-                />
-                <ul class="missions">
-                    <li
-                        v-for="(challenge, index) in [...hero.ranks[0]?.challenges ?? []].toReversed()"
-                        :class="{
-                            selected: index + 1 <= maxFeasableMissions,
-                            'has-prev': index == 0 ? false : true,
-                            'has-next': index + 2 <= maxFeasableMissions
-                        }"
-
-                        @click="maxFeasableMissions = index + 1"
-                    >
-                        <img :src="CHALLENGE_ICONS[challenge.type]!" />
-                    </li>
-                </ul>
-
-                <Tex
-                    image="infoButton"
-                    square
-                    clickable
-                    hover="auto"
-
-                    width="25px"
-                    height="25px"
-                    object-fit="contain"
-
-                    v-tooltip="({
-                        text: `<strong>Daily missions to complete</strong>
-                        <br/><br/>
-                        How many arcade missions you finish each day before switching to another mode (or stopping). Each mission requires 15 match completions to fully clear.
-                        <br/>
-                        Missions are not in a specific order, the first one that gets finished will be the one you do best at according to your average stats (usually completed from last to first in 18v18 Annihilation).
-                        <br/><br/>
-                        Current: <b>${maxFeasableMissions}</b>
-                        `,
-                        touchEnabled: true
-                    } satisfies TooltipBinding)"
-                />
-            </div>
+            <FormArcadeFeasableMissionsSelect
+                v-if="selectedGameType == 'arcade'"
+                :hero="hero"
+            />
             <div v-else />
             <div v-if="times.length > 3" class="scroll-indicator">
                 <Tex

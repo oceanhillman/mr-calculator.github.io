@@ -531,44 +531,6 @@
             .advanced
                 grid-column: auto
 
-        .arcade-mission-select
-            display: flex
-            align-items: center
-            gap: 10px
-
-            .missions
-                display: flex
-                align-items: center
-                gap: 0
-
-                li
-                    padding: 5px
-                    width: 45px
-                    height: 45px
-
-                    display: flex
-                    justify-content: center
-                    align-items: center
-
-                    border: 2px solid transparent
-                    cursor: pointer
-
-                    &.selected
-                        border: 2px solid $light-blue-highlight
-                        background: color-mix(in srgb, $light-blue-highlight 40%, white)
-
-                        &.has-prev
-                            border-left: none
-                        &.has-next
-                            border-right: none
-
-
-                    &:hover
-                        background: color-mix(in srgb, $light-blue-highlight 70%, $blue)
-
-                    img
-                        width: 100%
-
         .scroll-indicator
             display: none
 
