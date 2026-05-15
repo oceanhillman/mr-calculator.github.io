@@ -372,6 +372,26 @@ import { HERO_LIST } from '~/assets/data/heroes';
 import { tex } from '~/assets/data/textures';
 import ConfirmModal from '~/components/modals/ConfirmModal.vue';
 
+useSeoMeta({
+    title: 'Download | MR Proficiency Calculator',
+    description: 'Download (export) your data from the calculator to import on any other device',
+    
+    ogTitle: 'Download | MR Proficiency Calculator',
+    ogUrl: useCanonicalUrl('download'),
+    
+    twitterTitle: 'Download | MR Proficiency Calculator',
+    twitterDescription: 'Download (export) your data from the calculator to import on any other device',
+})
+
+useHead({
+    link: [
+        {
+            rel: "canonical",
+            href: useCanonicalUrl('download')
+        }
+    ]
+})
+
 const { openModal } = useModalManager();
 const { notify } = useNotificationManager();
 

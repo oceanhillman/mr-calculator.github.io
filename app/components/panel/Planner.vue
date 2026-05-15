@@ -47,7 +47,7 @@
                 />
             </div>
         </template>
-        <template v-if="hasAvgArcadeStats">
+        <template v-if="timeEstimatesArcade">
             <div class="option">
                 <div class="label">
                     What game modes?
@@ -525,7 +525,6 @@ const props = defineProps<{
 const emit = defineEmits(['openArcadeStatsMenu'])
 
 const level = defineModel<PlayerHeroStore>({ required: true });
-const hasAvgArcadeStats = useHasAvgArcadeStats(props.hero);
 
 const totalTimes = computed(() => {
     let conservative = 0;

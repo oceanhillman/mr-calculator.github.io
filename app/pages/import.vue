@@ -539,6 +539,26 @@ import {
 } from '~/assets/data/common';
 import { HERO_LIST } from '~/assets/data/heroes';
 
+useSeoMeta({
+    title: 'Import | MR Proficiency Calculator',
+    description: 'Import data into the calculator from any other device',
+    
+    ogTitle: 'Import | MR Proficiency Calculator',
+    ogUrl: useCanonicalUrl('import'),
+    
+    twitterTitle: 'Import | MR Proficiency Calculator',
+    twitterDescription: 'Import data into the calculator from any other device',
+})
+
+useHead({
+    link: [
+        {
+            rel: "canonical",
+            href: useCanonicalUrl('import')
+        }
+    ]
+})
+
 const { notify } = useNotificationManager();
 
 const storedHeroes = Object.entries(localStorage ?? {})

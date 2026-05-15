@@ -5,6 +5,7 @@ import path from "path";
 import sharp from "sharp";
 
 /**
+ * From pak: pakchunkHQ-Windows.utoc
  * To export root directories:
  * - HeroDetail/
  * - HeroGallery_V3/

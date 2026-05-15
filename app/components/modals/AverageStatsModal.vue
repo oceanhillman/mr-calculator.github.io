@@ -469,6 +469,8 @@ const genericStatsUsed = computed(() => {
 const genericStatsExpanded = ref(false);
 
 const statsType = ref<'normal'|'arcade'>(props.tab);
+watch(() => props.tab, (tab) => statsType.value = tab);
+
 const models = ref<Record<string, string>>({});
 const modelsArcade = ref<Record<string, string>>({});
 

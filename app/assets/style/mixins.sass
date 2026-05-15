@@ -61,7 +61,7 @@
 @mixin scrollbar($thickness: 10px, $background: #000000, $thumb: #8a8a8a, $active: #ffffff)
     @supports not selector(::-webkit-scrollbar)
         &
-            scrollbar-color: $background $thumb
+            scrollbar-color: $thumb $background
             
             @if $thickness < 10px
                 scrollbar-width: thin

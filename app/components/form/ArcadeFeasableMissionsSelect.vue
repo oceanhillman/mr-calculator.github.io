@@ -38,7 +38,7 @@
             v-tooltip="({
                 text: `<strong>Daily missions to complete</strong>
                 <br/><br/>
-                How many arcade missions you finish each day before switching to another mode (or stopping). Each mission requires 15 match completions to fully clear.
+                How many arcade missions you finish each day before switching to another mode (or stopping). Each mission requires 15 completions to fully clear.
                 <br/>
                 Missions are not in a specific order, the first one that gets finished will be the one you do best at according to your average stats (usually completed from last to first in 18v18 Annihilation).
                 <br/><br/>

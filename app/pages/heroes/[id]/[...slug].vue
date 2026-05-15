@@ -123,12 +123,12 @@
                 <li
                     v-if="achievementList?.length"
                     :class="{
-                        new: !preferences.sawAchievementsTab,
+                        // new: !preferences.sawAchievementsTab,
                         selected: page == 'achievements'
                     }"
                     @click="setPage('achievements')"
                 >
-                    <span v-if="!preferences.sawAchievementsTab" class="new">NEW</span>
+                    <!-- <span v-if="!preferences.sawAchievementsTab" class="new">NEW</span> -->
                     Achievements
                 </li>
             </ul>
@@ -707,12 +707,13 @@ if (import.meta.server && hasGenericAvgStats) {
 else if (import.meta.client && hasGenericAvgStats)
     description = undefined;
 
+const url = useCanonicalUrl('heroes', hero.value.id);
 useSeoMeta({
     title: `${hero.value.name} | MR Proficiency Calculator`,
     description,
 
     ogTitle: `${hero.value.name} | MR Proficiency Calculator`,
-    ogUrl: useAbsoluteUrl('heroes', hero.value.id),
+    ogUrl: url,
     ogImage: useAbsoluteUrl('/img/seo/og-image-heroes.webp'),
     ogImageWidth: '1200',
     ogImageHeight: '630',
@@ -723,6 +724,15 @@ useSeoMeta({
     twitterImage: useAbsoluteUrl('/img/seo/og-image-heroes.webp'),
     twitterImageAlt: 'Heroes | Marvel Rivals Proficiency Calculator - Calculate how long it takes to unlock every proficiency reward for any hero',
 });
+
+useHead({
+    link: [
+        {
+            rel: "canonical",
+            href: url
+        }
+    ]
+})
 
 const menuOpen = ref(false);
 

@@ -978,5 +978,25 @@
     "rarity": "copper",
     "requirement": 1,
     "reward": 5
+  },
+  {
+    "owner": "devil-dinosaur",
+    "id": "fb383a0e-c524-4c57-b565-57cf7ac3f39a_life-finds-a-way",
+    "title": "LIFE FINDS A WAY",
+    "description": "As Devil Dinosaur, KO and enemy behind you with a tail swipe.",
+    "category": "heroic-journey",
+    "rarity": "silver",
+    "requirement": 1,
+    "reward": 10
+  },
+  {
+    "owner": "devil-dinosaur",
+    "id": "99fa110a-4d45-436d-a2b0-91c331c947c5_surf-turf",
+    "title": "SURF & TURF",
+    "description": "As Devil Dinosaur, land 1 KO with an assist from Jeff the Land Shark.",
+    "category": "heroic-journey",
+    "rarity": "copper",
+    "requirement": 1,
+    "reward": 5
   }
 ]

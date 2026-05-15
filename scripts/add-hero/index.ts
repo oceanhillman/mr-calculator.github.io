@@ -141,7 +141,8 @@ async function main() {
 
             id: ({ results }) => p.text({
                 message: 'String ID (leave empty to infer)',
-                placeholder: results.name ? inferHeroId(results.name) : 'e.g.: luna-snow'
+                placeholder: results.name ? inferHeroId(results.name) : 'e.g.: luna-snow',
+                defaultValue: inferHeroId(results.name ?? '')
             }),
             internalId: ({ results }) => p.text({
                 message: 'Internal ID (leave empty to infer)',
@@ -149,7 +150,8 @@ async function main() {
                 validate: v => {
                     if (!v && !inferInternalId((results.id as string) || inferHeroId(results.name!)))
                         return 'ID is required';
-                }
+                },
+                defaultValue: inferInternalId(results.id as string ?? '')
             }),
         }, {
             onCancel: () => {
@@ -163,8 +165,14 @@ async function main() {
 
             await selectChoice(heroIdentity, choice as string);
         }
-        else
+        else {
+            if (!heroIdentity.id || !heroIdentity.internalId) {
+                p.cancel('Canceled! Hero ID or Internal ID could not be found or inferred!');
+                process.exit(0);
+            }
+
             await createHeroFull(heroIdentity);
+        }
     }
     else {
         const heroId = await p.text({

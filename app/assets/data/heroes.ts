@@ -48,6 +48,7 @@ import { Thor } from "./heroes/thor";
 import { Venom } from "./heroes/venom";
 import { WhiteFox } from "./heroes/white-fox";
 import { BlackCat } from "./heroes/black-cat";
+import { DevilDinosaur } from "./heroes/devil-dinosaur";
 
 export const HERO_LIST: HeroData[] = [
     AdamWarlock,
@@ -61,6 +62,7 @@ export const HERO_LIST: HeroData[] = [
     CloakAndDagger,
     Daredevil,
     Deadpool,
+    DevilDinosaur,
     DoctorStrange,
     ElsaBloodstone,
     EmmaFrost,

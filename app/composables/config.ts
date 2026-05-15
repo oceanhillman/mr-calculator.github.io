@@ -14,5 +14,8 @@ const config = {
 export function useAbsoluteUrl(...components: string[]) {
     return config.domainHttp + '/' + components.map(c => trimFirst('/', trimLast('/', c))).join('/');
 }
+export function useCanonicalUrl(...components: string[]) {
+    return config.domainHttp + '/' + components.map(c => trimFirst('/', trimLast('/', c))).join('/') + '/';
+}
 
 export default config;

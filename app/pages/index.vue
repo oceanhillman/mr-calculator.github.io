@@ -309,7 +309,7 @@
                                         size: currentHero.iconAnimationSize ?? [3600, 4000],
                                         columns: 6,
                                         rows: 10,
-                                        fps: 30,
+                                        fps: currentHero.ranks.find(r => r.type.id == 'champion')!.type.rewards[0]!.iconAnimation!.fps,
                                         offset: currentHero.iconLargeAnimationOffset ?? currentHero.iconAnimationOffset
                                     },
                                     rarity: 'legendary'
@@ -357,6 +357,7 @@
 
                         headless
                         :hide-generic-stats="inputtedAvgStats"
+                        :tab="avgStatsModalTab"
                     />
                 </div>
                 <div class="title">
@@ -415,6 +416,8 @@
                             v-model="plannerHeroStoreNumberOfDays"
                             :time-estimates="timeEstimates.normal"
                             :time-estimates-arcade="timeEstimates.arcade"
+
+                            @open-arcade-stats-menu="editArcadeStats"
                         />
                     </div>
                     <div class="planner-showcase showcase with-border-decorations with-corner-decorations">
@@ -427,6 +430,7 @@
                             :time-estimates-arcade="timeEstimates.arcade"
 
                             :value-linking="false"
+                            @open-arcade-stats-menu="editArcadeStats"
                         />
                     </div>
                 </div>
@@ -910,6 +914,7 @@ function credibilityClickHero(hero: string) {
 
 const currentHero = ref(featuredHero.value ?? DEFAULT_HERO);
 const averageStatsModal = ref<InstanceType<typeof AverageStatsModal>>();
+const avgStatsModalTab = ref<'normal'|'arcade'>('normal');
 
 const heroSelectOpen = ref(false);
 function clickHero(heroId: string) {
@@ -1030,6 +1035,11 @@ watch([currentHero, () => averageStatsModal.value?.stats], () => {
     plannerHeroStoreWeekly.value = cloneObjectRefAsRaw(store)!;
     plannerHeroStoreWeekly.value.planner.mode = 'weekly';
 });
+
+function editArcadeStats() {
+    avgStatsModalTab.value = 'arcade';
+    averageStatsModal.value?.$el.scrollIntoView({ behavior: 'smooth' });
+}
 
 // prevent changing planner mode, since we display both options
 watch(plannerHeroStoreNumberOfDays, (store) => {
