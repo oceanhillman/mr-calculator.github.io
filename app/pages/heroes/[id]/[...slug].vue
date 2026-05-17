@@ -83,6 +83,12 @@
                     Overview
                 </li>
                 <li
+                    :class="{ selected: page == 'cosmetics' }"
+                    @click="setPage('cosmetics')"
+                >
+                    Cosmetics
+                </li>
+                <li
                     :class="{ 'warning-wrapper': 1, selected: page == 'customize' }"
                     @click="setPage('customize')"
                 >
@@ -440,6 +446,44 @@
                 </PanelTabbedContainer>
             </div>
             <div
+                v-else-if="page == 'cosmetics'"
+                class="content cosmetics-wrapper"
+            >
+                <div class="cosmetics-controls">
+                    <p class="owned-count">
+                        <ClientOnly>
+                            <span class="owned">{{ ownedCostumes.length }}</span>/<span class="total">{{ cosmeticsTotal }} OWNED</span>
+                        </ClientOnly>
+                    </p>
+                    <FormDropdown
+                        :options="filterOptions"
+                        v-model="activeFilters"
+                        placeholder="FILTER"
+                        multi
+                        small
+                    />
+                    <FormDropdown
+                        :options="sortDropdownOptions"
+                        v-model="costumeSort"
+                        small
+                    />
+                </div>
+                <div class="list">
+                    <PanelCostumeCard
+                        v-for="costume in sortedCostumes"
+                        :key="skinSlug(costume.name)"
+                        :name="costume.name"
+                        :src="`/img/heroes/cosmetics/${heroId}/${skinSlug(costume.name)}.png`"
+                        :rarity="costume.rarity"
+                        :owned="ownedCostumes.includes(skinSlug(costume.name))"
+                        :image-scale="costumeImageScale"
+                        :image-origin="costumeImageOrigin"
+                        @toggle="toggleCostumeOwned(skinSlug(costume.name))"
+                        @click="openCostumeDetail(costume)"
+                    />
+                </div>
+            </div>
+            <div
                 v-else-if="page == 'customize'"
                 class="content update-stats"
             >
@@ -587,9 +631,11 @@ import ConvertUnknownHeroModal from '~/components/modals/ConvertUnknownHeroModal
 import ProficiencyPointsModal from '~/components/modals/ProficiencyPointsModal.vue';
 import type { TooltipBinding } from '~/directives/tooltip';
 import { ACHIEVEMENT_CATEGORIES, getAchievements, type AchievementTypeCategory } from '~/assets/data/achievements';
+import { skinSlug, HERO_COSMETICS, type CostumeEntry } from '~/assets/data/cosmeticsRarity';
+import CostumeDetailModal from '~/components/modals/CostumeDetailModal.vue';
 
-type PageId = 'overview'|'customize'|'estimates'|'planner'|'achievements';
-const PAGE_IDS = ['overview', 'customize', 'estimates', 'planner', 'achievements'];
+type PageId = 'overview'|'cosmetics'|'customize'|'estimates'|'planner'|'achievements';
+const PAGE_IDS = ['overview', 'cosmetics', 'customize', 'estimates', 'planner', 'achievements'];
 
 const { openModal } = useModalManager();
 const { notify } = useNotificationManager();
@@ -1202,6 +1248,80 @@ const availableAchievementCategories = computed(() => {
 
     return ACHIEVEMENT_CATEGORIES.filter(c => categoryIds.includes(c.id));
 });
+
+// ==== COSMETICS =====
+const ownedCostumes = useLocalStorage<string[]>(`cosmetics_owned_${heroId}`, []);
+const cosmeticsTotal = computed(() => HERO_COSMETICS[heroId as string]?.length ?? 0);
+
+type CostumeHeroConfig = { scale?: number; origin?: string };
+const COSTUME_HERO_CONFIG: Record<string, CostumeHeroConfig> = {
+    'jeff-the-land-shark': { scale: 1.75, origin: 'center 8%' },
+    'devil-dinosaur':      { scale: 1.6,  origin: 'center -10%' },
+};
+const costumeConfig = COSTUME_HERO_CONFIG[heroId as string] ?? {};
+const costumeImageScale = costumeConfig.scale ?? 1;
+const costumeImageOrigin = costumeConfig.origin ?? 'center center';
+
+const activeFilters = ref<string[]>([]);
+const costumeSort = ref('rarity');
+
+const filterOptions = [
+    { value: 'legendary', label: 'LEGENDARY' },
+    { value: 'epic',      label: 'EPIC' },
+    { value: 'rare',      label: 'RARE' },
+    { value: 'shop',       label: 'SHOP' },
+    { value: 'battlepass', label: 'BATTLEPASS' },
+    { value: 'other',      label: 'OTHER' },
+];
+const sortDropdownOptions = [
+    { value: 'rarity',    label: 'SORT BY RARITY' },
+    { value: 'date-desc', label: 'SORT BY NEWEST' },
+    { value: 'date-asc',  label: 'SORT BY OLDEST' },
+];
+
+const RARITY_VALUES = new Set(['legendary', 'epic', 'rare']);
+const CATEGORY_VALUES = new Set(['shop', 'battlepass', 'other']);
+
+const RARITY_ORDER: Record<string, number> = { legendary: 0, epic: 1, rare: 2 };
+const sortedCostumes = computed(() => {
+    let list = (HERO_COSMETICS[heroId as string] ?? []).slice();
+
+    const rarityFilters = activeFilters.value.filter(f => RARITY_VALUES.has(f));
+    const categoryFilters = activeFilters.value.filter(f => CATEGORY_VALUES.has(f));
+
+    if (rarityFilters.length)
+        list = list.filter(c => rarityFilters.includes(c.rarity));
+    if (categoryFilters.length)
+        list = list.filter(c => categoryFilters.includes(c.category));
+
+    list.sort((a, b) => {
+        if (costumeSort.value === 'rarity') {
+            return (RARITY_ORDER[a.rarity] ?? 3) - (RARITY_ORDER[b.rarity] ?? 3);
+        }
+        const da = a.releaseDate ?? '';
+        const db = b.releaseDate ?? '';
+        return costumeSort.value === 'date-asc' ? da.localeCompare(db) : db.localeCompare(da);
+    });
+
+    return list;
+});
+
+function toggleCostumeOwned(slug: string) {
+    const index = ownedCostumes.value.indexOf(slug);
+    if (index === -1)
+        ownedCostumes.value.push(slug);
+    else
+        ownedCostumes.value.splice(index, 1);
+}
+
+function openCostumeDetail(costume: CostumeEntry) {
+    openModal(CostumeDetailModal, {
+        costume,
+        heroId: heroId as string,
+        imageScale: costumeImageScale,
+        imageOrigin: costumeImageOrigin,
+    });
+}
 
 // ==== CALCULATOR =====
 const timeEstimates = computed(() => {

@@ -716,6 +716,44 @@
                 justify-content: center
                 align-items: center
 
+            &.cosmetics-wrapper
+                padding: 20px
+
+                +media-desktop
+                    overflow-x: hidden
+                    overflow-y: auto
+                    +scrollbar($background: $light, $thumb: $light-blue, $active: $color)
+
+                .cosmetics-controls
+                    display: flex
+                    flex-wrap: wrap
+                    align-items: center
+                    gap: 20px
+                    margin-bottom: 20px
+
+                    .owned-count
+                        margin-right: auto
+                        font-family: MarvelRivalsBold
+                        font-size: 28px
+                        text-transform: uppercase
+                        color: $light-blue-highlight
+
+                        
+
+                .list
+                    width: 100%
+                    display: flex
+                    flex-direction: column
+                    flex-wrap: nowrap
+                    align-items: center
+                    gap: 20px
+
+                    +media-tablet
+                        flex-direction: row
+                        justify-content: flex-start
+                        flex-wrap: wrap
+                        align-items: start
+
             .update-stats-modal
                 max-height: 100%
 

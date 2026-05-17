@@ -171,7 +171,8 @@ import { texUrl } from '~/assets/data/textures';
 const props = defineProps<{
     small?: boolean,
     options: Option[],
-    multi?: boolean
+    multi?: boolean,
+    placeholder?: string,
 }>()
 
 const model = defineModel<string|string[]>();
@@ -181,10 +182,12 @@ const currentOptionLabel = computed(() => {
         return option?.whenCurrentLabel ?? option?.label ?? option?.value ?? '<unknown>';
     }
 
-    return props.options
-            .filter(o => model.value?.includes(o.value))
-            .map(o => o.whenCurrentLabel ?? o.label ?? o.value ?? '<unknown>')
-            .join('&bull;');
+    const selected = props.options.filter(o => (model.value as string[])?.includes(o.value));
+    if (selected.length === 0)
+        return props.placeholder ?? 'ALL';
+    if (selected.length === 1)
+        return selected[0]!.whenCurrentLabel ?? selected[0]!.label;
+    return `${selected.length} SELECTED`;
 });
 
 const expanded = ref(false);
@@ -203,22 +206,19 @@ function isSelected(option: Option) {
 }
 
 function optionClick(option: Option) {
-    if (!props.multi && !Array.isArray(model.value))
+    if (!props.multi && !Array.isArray(model.value)) {
         model.value = option.value;
-    else if (props.multi && Array.isArray(model.value)) {
-        if (!model.value)
-            model.value = [];
-
-        const optIndex = model.value?.indexOf(option.value) ?? -1;
-        if (optIndex == -1) {
-            model.value.push(option.value);
-        }
-        else {
-            model.value.splice(optIndex, 1);
-        }
+        expanded.value = false;
     }
-
-    expanded.value = false;
+    else if (props.multi && Array.isArray(model.value)) {
+        const next = [...model.value];
+        const optIndex = next.indexOf(option.value);
+        if (optIndex == -1)
+            next.push(option.value);
+        else
+            next.splice(optIndex, 1);
+        model.value = next;
+    }
 }
 
 </script>
