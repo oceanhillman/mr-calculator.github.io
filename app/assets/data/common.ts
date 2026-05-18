@@ -744,14 +744,16 @@ export interface SerializableDataMap {
         hero?: HeroData,
         stored: PlayerHeroStore,
         achievements?: Achievement[],
-        isFavourite?: boolean
+        isFavourite?: boolean,
+        ownedCostumes?: string[]
     },
     profile: {
         storedHeroes: ({ id: string } & PlayerHeroStore)[],
         favourites?: string[],
         achievements?: Achievement[],
         unknownHeroes?: HeroData[],
-        preferences?: PreferencesStore
+        preferences?: PreferencesStore,
+        ownedCostumes?: Record<string, string[]>
     }
 }
 
@@ -778,6 +780,7 @@ export const HeroSegmentSchema = z.object({
         hero: HeroDataSchema.optional(),
 
         achievements: z.array(AchievementSchema).optional(),
+        ownedCostumes: z.array(z.string()).optional(),
     })
 })
 
@@ -791,7 +794,8 @@ export const ProfileSegmentSchema = z.object({
         favourites: z.array(z.string()).optional(),
         achievements: z.array(AchievementSchema).optional(),
         unknownHeroes: z.array(HeroDataSchema).optional(),
-        preferences: PreferencesStoreSchema.optional()
+        preferences: PreferencesStoreSchema.optional(),
+        ownedCostumes: z.record(z.string(), z.array(z.string())).optional()
     })
 })
 

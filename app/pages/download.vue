@@ -489,12 +489,23 @@ function dataWithBase<T extends keyof SerializableDataMap>
 }
 
 const allData = computed<AnySerializableDataSegment>(() => {
+    const ownedCostumesMap: Record<string, string[]> = {};
+    Object.entries(localStorage ?? {})
+        .filter(([key]) => key.startsWith('cosmetics_owned_'))
+        .forEach(([key, v]) => {
+            const heroId = key.substring('cosmetics_owned_'.length);
+            const owned = JSON.parse(v) as string[];
+            if (owned.length)
+                ownedCostumesMap[heroId] = owned;
+        });
+
     const data = {
         storedHeroes: storedHeroes.value,
         favourites: includeFavourites.value ? favourites.value : undefined,
         achievements: includeAchievements.value ? achievementsStore.value : undefined,
         unknownHeroes: includeUnknownHeroes.value ? unknownHeroes.value : undefined,
-        preferences: includePreferences.value ? preferences.value : undefined
+        preferences: includePreferences.value ? preferences.value : undefined,
+        ownedCostumes: ownedCostumesMap
     }
 
     return dataWithBase('profile', data);
@@ -505,6 +516,9 @@ const heroData = computed<AnySerializableDataSegment>(() => {
     if (!selectedHero.value || !heroData)
         return allData.value;
 
+    const rawOwned = localStorage.getItem(`cosmetics_owned_${heroData.hero.id}`);
+    const ownedCostumes = rawOwned ? JSON.parse(rawOwned) as string[] : undefined;
+
     if (heroData.isUnknownHero)
         return dataWithBase('hero', {
             __unknownHero: true,
@@ -512,14 +526,16 @@ const heroData = computed<AnySerializableDataSegment>(() => {
             hero: heroData.hero,
             stored: heroData.stored,
             achievements: heroData.achievements,
-            isFavourite: heroData.isFavourite
+            isFavourite: heroData.isFavourite,
+            ownedCostumes: ownedCostumes?.length ? ownedCostumes : undefined
         })
 
     return dataWithBase('hero', {
         id: heroData.hero.id,
         stored: heroData.stored,
         achievements: heroData.achievements,
-        isFavourite: heroData.isFavourite
+        isFavourite: heroData.isFavourite,
+        ownedCostumes: ownedCostumes?.length ? ownedCostumes : undefined
     });
 })
 
@@ -571,17 +587,17 @@ function deleteData() {
     .promise
     .then(() => {
         localStorage.clear();
-
-        resetLocalStorageCache();
-        storedHeroes.value = [];
-
-        notify(
-            `Your data was deleted successfully.`,
-            3000,
-            { image: 'check', color: '#458a14' }
-        );
+        sessionStorage.setItem('dataDeleted', '1');
+        window.location.reload();
     })
     .catch(() => null)
 }
+
+onMounted(() => {
+    if (sessionStorage.getItem('dataDeleted')) {
+        sessionStorage.removeItem('dataDeleted');
+        notify(`Your data was deleted successfully.`, 3000, { image: 'check', color: '#458a14' });
+    }
+})
 
 </script>

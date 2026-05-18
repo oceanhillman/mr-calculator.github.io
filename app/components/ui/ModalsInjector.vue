@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <div v-for="modal in modals" :key="modal.id" class="modal-wrapper">
+        <div v-for="modal in modals" :key="modal.id" class="modal-wrapper" @click.self="cancelModal(modal.id)">
             <component
                 :is="modal.component"
                 v-bind="modal.props"
