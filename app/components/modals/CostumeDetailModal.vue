@@ -10,12 +10,12 @@
             title="Close"
             @click="$emit('cancel')"
         />
-        <div class="costume-image-panel" :style="{ '--hero-color': `var(--color)`, '--hero-image': `url(${src})` }">
+        <div class="costume-image-panel" :style="{ '--hero-color': heroColor, '--hero-image': `url(${src})` }">
             <div
                 :class="['hero-image', costume.rarity ? `rarity-${costume.rarity}` : '']"
                 :style="{
                     '--hero-image': `url(${src})`,
-                    '--hero-color': `var(--color)`
+                    '--hero-color': heroColor
                 }"
             >
                 <div class="stroke" />
@@ -134,7 +134,7 @@
         opacity: 1
 
 .costume-image-panel
-    background-color: rgba(0, 0, 0, 10%)
+    background-color: color-mix(in srgb, var(--hero-color) 40%, transparent)
     position: relative
     width: 400px
     flex-shrink: 0
@@ -337,9 +337,11 @@ import { skinSlug } from '~/assets/data/cosmeticsRarity';
 const props = withDefaults(defineProps<{
     costume: CostumeEntry;
     heroId: string;
+    heroColor?: string;
     imageScale?: number;
     imageOrigin?: string;
 }>(), {
+    heroColor: 'var(--color)',
     imageScale: 1,
     imageOrigin: 'center center',
 });

@@ -476,6 +476,7 @@
                         :src="`/img/heroes/cosmetics/${heroId}/${skinSlug(costume.name)}.png`"
                         :rarity="costume.rarity"
                         :owned="ownedCostumes.includes(skinSlug(costume.name))"
+                        :color="hero.color"
                         :image-scale="costumeImageScale"
                         :image-origin="costumeImageOrigin"
                         @toggle="toggleCostumeOwned(skinSlug(costume.name))"
@@ -1318,6 +1319,7 @@ function openCostumeDetail(costume: CostumeEntry) {
     openModal(CostumeDetailModal, {
         costume,
         heroId: heroId as string,
+        heroColor: hero.value.color,
         imageScale: costumeImageScale,
         imageOrigin: costumeImageOrigin,
     });

@@ -3,7 +3,7 @@
         class="hero-card"
         style="cursor: pointer"
         :style="{
-            '--bg-color': 'var(--color)'
+            '--bg-color': color
         }"
     >
         <Tex
@@ -18,7 +18,7 @@
             :class="['hero-image', rarity ? `rarity-${rarity.toLowerCase()}` : '']"
             :style="{
                 '--hero-image': `url(${src})`,
-                '--hero-color': 'var(--color)'
+                '--hero-color': color
             }"
         >
             <div class="stroke" />
@@ -102,9 +102,11 @@ const props = withDefaults(defineProps<{
     src: string;
     rarity: string;
     owned: boolean;
+    color?: string;
     imageScale?: number;
     imageOrigin?: string;
 }>(), {
+    color: 'var(--color)',
     imageScale: 1,
     imageOrigin: 'center center',
 });
