@@ -298,16 +298,16 @@ await useGsap(({ scrollTrigger }) => {
 
 const unknownHeroes = useLocalStorage<HeroData[]>('unknown_heroes', []);
 
-const filterByRole = ref('all-roles')
-const filterFavourites = ref(false);
+const filterByRole = useLocalStorage('heroes_filter_role', 'all-roles');
+const filterFavourites = useLocalStorage('heroes_filter_favourites', false);
 
 const favourites = useLocalStorage<HeroData['id'][]>(`favourite_heroes`, []);
 
 const searchText = ref('');
 
 watch(searchText, v => emit('update:searchText', v));
-watch(filterByRole, v => emit('update:filterByRole', v));
-watch(filterFavourites, v => emit('update:filterFavourites', v));
+watch(filterByRole, v => emit('update:filterByRole', v), { immediate: true });
+watch(filterFavourites, v => emit('update:filterFavourites', v), { immediate: true });
 
 function filterHeroList(list: HeroData[]) {
     if (filterByRole.value != 'all-roles' && filterByRole.value != 'favourite')
